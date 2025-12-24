@@ -1,0 +1,114 @@
+
+body {
+  background: linear-gradient(135deg, #232526 0%, #414345 100%);
+  color: #f5f6fa;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  min-width: 260px;
+  margin: 0;
+  padding: 0;
+}
+h2 {
+  margin: 0;
+  padding: 0;
+}
+
+.popup-container {
+  padding: 24px 18px 18px 18px;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+  background: rgba(30, 32, 34, 0.98);
+  margin: 0;
+}
+
+.popup-title {
+  font-size: 1.4em;
+  font-weight: 600;
+  margin-bottom: 12px;
+  letter-spacing: 0.5px;
+  text-align: center;
+}
+
+.label {
+  font-size: 1em;
+  margin-bottom: 6px;
+  display: block;
+  color: #b2bec3;
+}
+
+.input {
+  width: 100%;
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #444;
+  background: #232526;
+  color: #f5f6fa;
+  font-size: 1em;
+  margin-bottom: 12px;
+  box-sizing: border-box;
+  outline: none;
+  transition: border 0.2s;
+}
+.input:focus {
+  border: 1.5px solid #00b894;
+}
+
+.button {
+  width: 100%;
+  padding: 8px 0;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.1em;
+  font-weight: 500;
+  cursor: pointer;
+  margin-bottom: 10px;
+  background: linear-gradient(90deg, #00b894 0%, #00cec9 100%);
+  color: #fff;
+  transition: background 0.2s, color 0.2s;
+}
+.button:hover {
+  background: linear-gradient(90deg, #00cec9 0%, #00b894 100%);
+}
+
+.button-reset {
+  background: linear-gradient(90deg, #ffeaa7 0%, #fdcb6e 100%);
+  color: #222;
+}
+.button-reset:hover {
+  background: linear-gradient(90deg, #fdcb6e 0%, #ffeaa7 100%);
+}
+
+.status {
+  font-size: 0.98em;
+  color: #00cec9;
+  min-height: 1.2em;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.creator-list-title {
+  font-size: 1.1em;
+  margin: 10px 0 4px 0;
+  color: #81ecec;
+}
+
+.creator-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 10px 0;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.creator-item {
+  background: #353b48;
+  color: #dfe6e9;
+  border-radius: 5px;
+  padding: 5px 10px;
+  margin-bottom: 5px;
+  font-size: 0.98em;
+  word-break: break-all;
+}
+
+.hidden {
+  display: none;
+}

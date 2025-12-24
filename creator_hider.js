@@ -1,4 +1,19 @@
-let hiddenCreators = ["creator1", "creator2", "creator3"];
+let hiddenCreators = [];
+InitHiddenCreators();
+function InitHiddenCreators(){
+    browser.storage.local.get("creators").then((result) => {
+        if (result.creators) {
+            // Normalize all creator names to lowercase for comparison
+            hiddenCreators = result.creators.map(name => name.toLowerCase());
+            hiddenCreators.forEach((creator) => {
+                addCreatorsToList(creator);
+            });
+        }else{
+            browser.storage.local.set({ creators: [] });
+        }
+    });
+}
+console.log("Hidden creators loaded:", hiddenCreators);
 
 function HideCreator(creatorNames) {
     let NewArrivals = document.querySelector('.py-12');
@@ -7,7 +22,8 @@ function HideCreator(creatorNames) {
         newArrivalsListings.forEach(listing => {
             let listingLink = listing.querySelector("a");
             if (listingLink != null){
-                if (creatorNames.some(creatorName => listingLink.href.includes(creatorName))){
+                let href = listingLink.href.toLowerCase();
+                if (creatorNames.some(creatorName => href.includes(creatorName))){
                     listing.classList.add("hidden");
                 }
         }});
@@ -18,7 +34,8 @@ function HideCreator(creatorNames) {
         carouselListings.forEach(listing => {
             let listingLink = listing.querySelector("a");
             if (listingLink != null){
-                if (creatorNames.some(creatorName => listingLink.href.includes(creatorName))){
+                let href = listingLink.href.toLowerCase();
+                if (creatorNames.some(creatorName => href.includes(creatorName))){
                     listing.classList.add("hidden");
                 }  
         }});
@@ -28,7 +45,7 @@ function HideCreator(creatorNames) {
         if(listing != null){
             let userSpan = listing.querySelector(".decoration-2 span");
             if (userSpan != null){
-                let user = userSpan.textContent;
+                let user = userSpan.textContent.toLowerCase();
                 if (creatorNames.includes(user)){
                     console.log("Hiding listing by " + user);
                     listing.classList.add("hidden");

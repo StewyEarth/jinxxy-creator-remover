@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+     <link rel="stylesheet" href="creator_hider.css">
+</head>
+<body>
+    <div id="popup-content" class="popup-container">
+        <h2 class="popup-title">Jinxxy Creator Hider</h2>
+        <label for="creatorsToHide" class="label">Enter creator names to hide (comma separated):</label>
+        <input type="text" id="creatorsToHide" name="creators" class="input" required>
+        <button type="submit" id="saveButton" class="button">Hide Creator/creators</button>
+        <p id="statusText" class="status"></p>
+        <h3 class="creator-list-title">Hidden creators:</h3>
+        <ul id="creatorList" class="creator-list"></ul>
+        <button type="reset" id="resetButton" class="button button-reset">Reset</button>
+    </div>
+    <div id="error-content" class="hidden">
+      <p>Can't hide creators on this web page.</p>
+      <p>Try a different page.</p>
+    </div>
+    <script src="creator_hider_config.js"></script>
+</body>
+</html>

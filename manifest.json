@@ -5,10 +5,18 @@
 
   "description": "Allows you to hide posts by specific creators on on jinxxy",
   "homepage_url": "https://github.com/StewyEarth/Jinxxy-Creator-Remover",
-
+  
+  "permissions": ["activeTab","storage"],
+  
   "icons": {
     "48": "icons/block48.png",
     "64": "icons/block64.png"
+  },
+
+    "action": {
+    "default_icon": "icons/block48.png",
+    "default_title": "Jinxxy Creator Hider",
+    "default_popup": "popup/creator_hider.html"
   },
 
   "content_scripts": [
