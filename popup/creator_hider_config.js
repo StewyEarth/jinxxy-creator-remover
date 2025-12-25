@@ -25,15 +25,21 @@ function InitHiddenCreators(){
 }
 
 
+
 saveButton.addEventListener("click", () => {
     let newCreators = creatorInput.value.split(",").map(name => name.trim()).filter(name => name !== "");
-   if (newCreators.length !== 0) {
-       newCreators.forEach((creator) => {
-         addCreatorsToList(creator);
-       });
-         UpdateStorage();
-         creatorInput.value = "";
-   } 
+    let added = false;
+    newCreators.forEach((creator) => {
+        if (!hiddenCreators.includes(creator)) {
+            hiddenCreators.push(creator);
+            addCreatorsToList(creator);
+            added = true;
+        }
+    });
+    if (added) {
+        UpdateStorage();
+    }
+    creatorInput.value = "";
 });
 
 resetButton.addEventListener("click", () => {
@@ -63,5 +69,5 @@ function addCreatorsToList(creator) {
     listItem.textContent = creator;
     listItem.appendChild(divElement);
     creatorList.appendChild(listItem);
-    hiddenCreators.push(creator);
+    // No longer push to hiddenCreators here
 }
