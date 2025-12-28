@@ -25,6 +25,12 @@ function InitHiddenCreators(){
     });
 }
 
+creatorInput.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") {
+    event.preventDefault();
+    saveButton.click();
+  }
+});
 
 saveButton.addEventListener("click", () => {
     let newCreators = creatorInput.value.split(",").map(name => name.trim()).filter(name => name !== "");
