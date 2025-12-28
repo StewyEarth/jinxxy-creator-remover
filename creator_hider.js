@@ -11,6 +11,21 @@ function InitHiddenCreators(){
             storage.local.set({ creators: [] });
         }
     });
+    function popUpHandler(request, sender, sendResponse) {
+    if (request.action === "updateCreators") {
+      storage.local.get("creators").then((result) => {
+        if (result.creators) {
+          hiddenCreators = result.creators.map(name => name.toLowerCase());
+          HideCreator(hiddenCreators);
+        }
+      });
+    }
+  }
+  if (typeof browser !== "undefined" && browser.runtime && browser.runtime.onMessage) {
+    browser.runtime.onMessage.addListener(popUpHandler);
+  } else if (typeof chrome !== "undefined" && chrome.runtime && chrome.runtime.onMessage) {
+    chrome.runtime.onMessage.addListener(popUpHandler);
+  }
 }
 
 function HideCreator(creatorNames) {

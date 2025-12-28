@@ -25,6 +25,19 @@ function InitHiddenCreators(){
     });
 }
 
+function sendUpdateMessage() {
+  const message = { action: "updateCreators" };
+  if (typeof browser !== "undefined" && browser.tabs) {
+    browser.tabs.query({active: true, currentWindow: true}).then((tabs) => {
+      browser.tabs.sendMessage(tabs[0].id, message);
+    });
+  } else if (typeof chrome !== "undefined" && chrome.tabs) {
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+      chrome.tabs.sendMessage(tabs[0].id, message);
+    });
+  }
+}
+
 creatorInput.addEventListener("keydown", (event) => {
   if (event.key === "Enter") {
     event.preventDefault();
@@ -58,6 +71,7 @@ resetButton.addEventListener("click", () => {
 function UpdateStorage() {
     storage.local.set({ creators: hiddenCreators }).then(() => {
         statusText.textContent = "Creators updated!";
+        sendUpdateMessage();
         setTimeout(() => {
             statusText.textContent = "";
         }, 2000);
