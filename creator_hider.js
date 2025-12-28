@@ -1,13 +1,14 @@
+const storage = (typeof browser !== 'undefined' && browser.storage) ? browser.storage : chrome.storage;
 let hiddenCreators = [];
 InitHiddenCreators();
 function InitHiddenCreators(){
-    browser.storage.local.get("creators").then((result) => {
+    storage.local.get("creators").then((result) => {
         if (result.creators) {
             // Normalize all creator names to lowercase for comparison
             hiddenCreators = result.creators.map(name => name.toLowerCase());
             HideCreator(hiddenCreators);
         }else{
-            browser.storage.local.set({ creators: [] });
+            storage.local.set({ creators: [] });
         }
     });
 }

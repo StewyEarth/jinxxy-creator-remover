@@ -1,3 +1,4 @@
+const storage = (typeof browser !== 'undefined' && browser.storage) ? browser.storage : chrome.storage;
 let creatorInput = document.getElementById("creatorsToHide");
 let saveButton = document.getElementById("saveButton");
 let statusText = document.getElementById("statusText");
@@ -12,14 +13,14 @@ function onError(error) {
 InitHiddenCreators();
 
 function InitHiddenCreators(){
-    browser.storage.local.get("creators").then((result) => {
+    storage.local.get("creators").then((result) => {
         if (result.creators) {
             hiddenCreators = result.creators;
             hiddenCreators.forEach((creator) => {
                 addCreatorsToList(creator);
             });
         }else{
-            browser.storage.local.set({ creators: [] });
+            storage.local.set({ creators: [] });
         }
     });
 }
@@ -49,7 +50,7 @@ resetButton.addEventListener("click", () => {
 
 
 function UpdateStorage() {
-    browser.storage.local.set({ creators: hiddenCreators }).then(() => {
+    storage.local.set({ creators: hiddenCreators }).then(() => {
         statusText.textContent = "Creators updated!";
         setTimeout(() => {
             statusText.textContent = "";
