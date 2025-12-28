@@ -5,15 +5,12 @@ function InitHiddenCreators(){
         if (result.creators) {
             // Normalize all creator names to lowercase for comparison
             hiddenCreators = result.creators.map(name => name.toLowerCase());
-            hiddenCreators.forEach((creator) => {
-                addCreatorsToList(creator);
-            });
+            HideCreator(hiddenCreators);
         }else{
             browser.storage.local.set({ creators: [] });
         }
     });
 }
-console.log("Hidden creators loaded:", hiddenCreators);
 
 function HideCreator(creatorNames) {
     let NewArrivals = document.querySelector('.py-12');
@@ -47,14 +44,12 @@ function HideCreator(creatorNames) {
             if (userSpan != null){
                 let user = userSpan.textContent.toLowerCase();
                 if (creatorNames.includes(user)){
-                    console.log("Hiding listing by " + user);
                     listing.classList.add("hidden");
             }
         }
     }
 })
 }
-
 
 const observer = new MutationObserver(() => {
   HideCreator(hiddenCreators);

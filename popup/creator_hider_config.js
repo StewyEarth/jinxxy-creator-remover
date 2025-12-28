@@ -25,7 +25,6 @@ function InitHiddenCreators(){
 }
 
 
-
 saveButton.addEventListener("click", () => {
     let newCreators = creatorInput.value.split(",").map(name => name.trim()).filter(name => name !== "");
     let added = false;
@@ -60,14 +59,28 @@ function UpdateStorage() {
 
 function addCreatorsToList(creator) {
     let divElement = document.createElement("div");
-    divElement.classList.add("creator-entry");
+    let listItem = document.createElement("li");
     let removeButton = document.createElement("button");
+    divElement.classList.add("creator-entry");
+    
+    //Remove Button
     removeButton.classList.add("remove-button");
     removeButton.textContent = "X";
-    let listItem = document.createElement("li");
+
+
     listItem.classList.add("creator-item");
     listItem.textContent = creator;
     listItem.appendChild(divElement);
+    listItem.appendChild(removeButton);
     creatorList.appendChild(listItem);
-    // No longer push to hiddenCreators here
+
+    // Remove Creator functionality
+    removeButton.addEventListener("click", () => {
+        let creatorIndex = hiddenCreators.indexOf(creator);
+        if (creatorIndex > -1) {
+            hiddenCreators.splice(creatorIndex, 1);
+            UpdateStorage();
+            creatorList.removeChild(listItem);
+        }
+    });
 }

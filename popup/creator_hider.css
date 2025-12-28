@@ -107,8 +107,24 @@ h2 {
   margin-bottom: 5px;
   font-size: 0.98em;
   word-break: break-all;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: .5em;
 }
-
+.remove-button {
+  background: #e74c3c;
+  border: none;
+  border-radius: 3px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 0.9em;
+  padding: 2px 6px;
+  transition: background 0.2s;
+}
+.remove-button:hover {
+  background: #c0392b;
+}
 .hidden {
   display: none;
 }
