@@ -1,7 +1,7 @@
 # JinxxyCreatorRemover
 
 Removes people you don't want to see when scrolling Jinxxy.com.
-![Image of the program](https://raw.githubusercontent.com/StewyEarth/Jinxxy-Creator-Remover/refs/heads/main/github/images/Banner.png)
+![Image of the program](https://raw.githubusercontent.com/StewyEarth/Jinxxy-Creator-Remover/refs/heads/master/github/images/preview.png)
 ## Features
 - Hide posts from specific creators on Jinxxy.com
 - Easy-to-use popup for managing your hidden creators list
