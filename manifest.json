@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Creator Hider",
-  "version": "1.0.1",
+  "version": "1.0.2",
 
   "description": "Allows you to hide posts by specific creators on on jinxxy",
   "homepage_url": "https://github.com/StewyEarth/Jinxxy-Creator-Remover",
@@ -10,11 +10,12 @@
   
   "icons": {
     "48": "icons/block48.png",
-    "64": "icons/block64.png"
+    "64": "icons/block64.png",
+    "128": "icons/block128.png"
   },
 
     "action": {
-    "default_icon": "icons/block48.png",
+    "default_icon": "icons/block64.png",
     "default_title": "Jinxxy Creator Hider",
     "default_popup": "popup/creator_hider.html"
   },
