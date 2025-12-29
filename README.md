@@ -10,7 +10,7 @@
 - [Firefox Add-on](https://addons.mozilla.org/en-US/firefox/addon/jinxyy-creator-hider/)
 - (Chrome Web Store link coming soon)
 
-## Manualnstallation
+## Manual Installation
 1. Download or clone this repository.
 2. Go to your browser’s extensions/add-ons page.
 3. Enable “Developer mode” (Chrome) or “Debug Add-ons” (Firefox).
