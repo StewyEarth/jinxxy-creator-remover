@@ -23,6 +23,10 @@
 - To remove a creator, click the “X” next to their name.
 - Click “Reset” to clear your hidden creators list.
 
+## Known issues
+* Doesn't revert and show posts hidden without refreshing the page when a creator is removed from the list.
+* Doesn't hide posts on the main page if the creator uses a store link that doesn't include the hidden name
+
 ## Privacy
 - This extension does not collect, transmit, or share any personal information.
 - All data is stored locally on your device.
