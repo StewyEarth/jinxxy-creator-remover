@@ -8,7 +8,7 @@
 
 ## Extension Store Links
 - [Firefox Add-on](https://addons.mozilla.org/en-US/firefox/addon/jinxyy-creator-hider/)
-- (Chrome Web Store link coming soon)
+- [Chrome Add-on](https://chromewebstore.google.com/detail/creator-hider/gljhoglgaeofljkdcidkhnglonljaeik)
 
 ## Manual Installation
 1. Download or clone this repository.
