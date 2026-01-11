@@ -1,8 +1,11 @@
-# JinxxyCreatorRemover
+# Jinxxy Companion
 ![Extension Preview](https://github.com/stewyearth/jinxxy-creator-remover/blob/main/github/images/Banner.png?raw=true)
+(outdated picture from first version)
 ## Features
 - Hide posts from specific creators on Jinxxy.com
 - Easy-to-use popup for managing your hidden creators list
+* Option to sort marketplace links by "Latest" automatically
+* Option to hide promoted product listings
 - Works on both Firefox and Chrome
 - All data is stored locally; no data is sent to any server
 

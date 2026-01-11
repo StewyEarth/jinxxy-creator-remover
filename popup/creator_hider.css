@@ -23,9 +23,11 @@ h2 {
 .popup-title {
   font-size: 1.4em;
   font-weight: 600;
-  margin-bottom: 12px;
+  margin: 0 0 .8em 0;
+  color: #00cec9;
   letter-spacing: 0.5px;
   text-align: center;
+  font-size: 1.5em;
 }
 
 .label {
@@ -95,7 +97,7 @@ h2 {
   list-style: none;
   padding: 0;
   margin: 0 0 10px 0;
-  max-height: 200px;
+  max-height: 150px;
   overflow-y: auto;
 }
 
@@ -127,4 +129,75 @@ h2 {
 }
 .hidden {
   display: none;
+}
+
+/* Section title styling for consistency */
+.section-title {
+  font-size: 1.1em;
+  font-weight: 500;
+  color: #81ecec;
+  margin: 12px 0 6px 0;
+  letter-spacing: 0.2px;
+}
+
+/* Style for <details> and <summary> */
+details {
+  margin-top: 14px;
+  background: #232526;
+  border-radius: 8px;
+  padding: 8px 10px 8px 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+  color: #b2bec3;
+}
+
+summary {
+  user-select: none;
+  font-size: 1.05em;
+  font-weight: 500;
+  cursor: pointer;
+  outline: none;
+  color: #81ecec;
+  padding: 2px 0 6px 0;
+  transition: color 0.2s;
+}
+summary:hover {
+  color: #00cec9;
+}
+
+/* Checkbox styling */
+.checkbox, input[type="checkbox"] {
+  accent-color: #00b894;
+  width: 16px;
+  height: 16px;
+  margin-left: 8px;
+  vertical-align: middle;
+  border-radius: 4px;
+  background: #232526;
+  border: 1.5px solid #444;
+  transition: border 0.2s;
+}
+
+/* Style for options list inside <details> */
+.options-list {
+  list-style: none;
+  padding: 0;
+  margin: 8px 0 0 0;
+}
+.options-list li {
+  background: #232526;
+  color: #b2bec3;
+  padding: 8px 10px;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  font-size: 1em;
+  border-top: .2em solid #444;
+}
+.options-list li label {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #b2bec3;
+  font-size: 1em;
 }

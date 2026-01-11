@@ -6,15 +6,34 @@
 </head>
 <body>
     <div id="popup-content" class="popup-container">
-        <h2 class="popup-title">Jinxxy Creator Hider</h2>
+        <h1 class="popup-title">Jinxxy companion</h1>
+        <h3 class="section-title">Hide Creators</h3>
         <label for="creatorsToHide" class="label">Enter creator names to hide (comma separated):</label>
         <input type="text" id="creatorsToHide" name="creators" class="input" required>
         <button type="submit" id="saveButton" class="button">Hide Creator/creators</button>
-        <p id="statusText" class="status"></p>
-        <h3 class="creator-list-title">Hidden creators:</h3>
+        <p id="statusText" class="status hidden"></p>
+        <h3 class="creator-list-title hidden" id="creatorlistTitle">Hidden creators:</h3>
         <ul id="creatorList" class="creator-list"></ul>
-        <button type="reset" id="resetButton" class="button button-reset">Reset</button>
+        <button type="reset" id="resetButton" class="button button-reset hidden">Reset</button>
+        <details>
+            <summary class="section-title" id="optionsList">Options</summary>
+            <ul class="options-list">
+                <li>
+                    <label for="sortByLatestCheckbox">
+                        Fix links to sort by latest
+                    <input type="checkbox" id="sortByLatestCheckbox" class="checkbox">
+                    </label>
+                </li>
+                <li>
+                    <label for="hidePromotedCheckbox">
+                        Hide promoted listings
+                    <input type="checkbox" id="hidePromotedCheckbox" class="checkbox">
+                    </label>
+                </li>
+            </ul>
+
+        </details>
     </div>
     <script src="creator_hider_config.js"></script>
 </body>
-</html>
+</html
