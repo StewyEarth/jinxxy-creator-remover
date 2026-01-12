@@ -9,6 +9,7 @@ const sortByLatestCheckbox = document.getElementById("sortByLatestCheckbox");
 const hidePromotedCheckbox = document.getElementById("hidePromotedCheckbox");
 const optionsList = document.getElementById("optionsList");
 const currencySelect = document.getElementById("currencyselect");
+const infoPopupCurrencyLastUpdate = document.getElementById("infoPopupCurrencyLastUpdate");
 let hiddenCreators = [];
 let sortByLatest = false;
 let hidePromoted = false;
@@ -56,6 +57,7 @@ function InitJinxxyCompanion() {
   storage.local.get("currencies").then((result) => {
     if (result.currencies) {
       currenciesList = result.currencies;
+      infoPopupCurrencyLastUpdate.textContent = `${currenciesList.latestUpdate}`;
     } else {
       getCurrencies();
     }
@@ -81,7 +83,7 @@ currencySelect.addEventListener("change", () => {
   const message = { action: "UpdateCurrency", value: currencySelect.value };
   storage.local.set({ selectedCurrency: newCurrency });
   console.log("Selected currency:", newCurrency);
-  
+
   if (typeof browser !== "undefined" && browser.tabs) {
     browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
       if (tabs[0].url.includes("jinxxy.com")) {
@@ -92,7 +94,8 @@ currencySelect.addEventListener("change", () => {
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
       if (tabs[0].url.includes("jinxxy.com")) {
         chrome.tabs.sendMessage(tabs[0].id, message);
-      } });
+      }
+    });
   }
 });
 
@@ -236,7 +239,7 @@ function getCurrencies() {
   browser.runtime.sendMessage(message).then((response) => {
     if (response && response.currencies) {
       currenciesList = response.currencies;
-      console.log(currenciesList.currencies);
+      infoPopupCurrencyLastUpdate.textContent = `${currenciesList.latestUpdate}`;
     }
   });
 }

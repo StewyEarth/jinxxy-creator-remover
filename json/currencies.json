@@ -13,12 +13,6 @@
       "symbol": "€",
       "rate": 0.85948874
     },
-    "jpy": {
-      "code": "jpy",
-      "name": "Japanese Yen",
-      "symbol": "¥",
-      "rate": 157.89384815
-    },
     "gbp": {
       "code": "gbp",
       "name": "British Pound Sterling",
@@ -31,23 +25,17 @@
       "symbol": "A$",
       "rate": 1.49565744
     },
+    "nzd": {
+      "code": "nzd",
+      "name": "New Zealand Dollar",
+      "symbol": "NZ$",
+      "rate": 1.74481728
+    },
     "cad": {
       "code": "cad",
       "name": "Canadian Dollar",
       "symbol": "C$",
       "rate": 1.39166452
-    },
-    "chf": {
-      "code": "chf",
-      "name": "Swiss Franc",
-      "symbol": "CHF",
-      "rate": 0.8009179
-    },
-    "cny": {
-      "code": "cny",
-      "name": "Chinese Yuan",
-      "symbol": "¥",
-      "rate": 6.98183682
     },
     "sek": {
       "code": "sek",
@@ -67,12 +55,25 @@
       "symbol": "Dkk",
       "rate": 6.42115743
     },
-    "nzd": {
-      "code": "nzd",
-      "name": "New Zealand Dollar",
-      "symbol": "NZ$",
-      "rate": 1.74481728
+    "jpy": {
+      "code": "jpy",
+      "name": "Japanese Yen",
+      "symbol": "¥",
+      "rate": 157.89384815
     },
+    "chf": {
+      "code": "chf",
+      "name": "Swiss Franc",
+      "symbol": "CHF",
+      "rate": 0.8009179
+    },
+    "cny": {
+      "code": "cny",
+      "name": "Chinese Yuan",
+      "symbol": "¥",
+      "rate": 6.98183682
+    },
+
     "inr": {
       "code": "inr",
       "name": "Indian Rupee",

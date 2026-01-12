@@ -1,4 +1,5 @@
 body {
+  user-select: none;
   background: linear-gradient(135deg, #232526 0%, #414345 100%);
   color: #f5f6fa;
   font-family: "Segoe UI", Arial, sans-serif;
@@ -65,6 +66,7 @@ h2 {
   background: linear-gradient(90deg, #00b894 0%, #00cec9 100%);
   color: #fff;
   transition: background 0.2s, color 0.2s;
+  padding: .8em;
 }
 .button:hover {
   background: linear-gradient(90deg, #00cec9 0%, #00b894 100%);
@@ -166,6 +168,7 @@ summary:hover {
 /* Checkbox styling */
 .checkbox,
 input[type="checkbox"] {
+  cursor: pointer;
   accent-color: #00b894;
   width: 16px;
   height: 16px;
@@ -202,8 +205,10 @@ input[type="checkbox"] {
   font-size: 1em;
 }
 
-.popupselect{
-  width: 100%;
+.popupselect {
+  cursor: pointer;
+  min-width: 5%;
+  max-width: 30%;
   padding: 6px 8px;
   border-radius: 6px;
   border: 1px solid #444;
@@ -215,7 +220,103 @@ input[type="checkbox"] {
   outline: none;
   transition: border 0.2s;
 }
-.popupselect-option{
+.popupselect-option {
   background: #232526;
   color: #f5f6fa;
+}
+
+#infoButton {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 1.2em;
+  font-weight: bold;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  background-color: #222f3e;
+  border: solid 2px #00b894;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  transition: background 0.2s, box-shadow 0.2s;
+  padding: .8em;
+}
+#infoButton:hover {
+  background: #00b894;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+#infoPopup {
+  display: none;
+  opacity: 1;
+  position: absolute;
+  top: 35px;
+  right: 10px;
+  width: 280px;
+  padding: 12px 16px;
+  background: rgba(30, 32, 34, 0.98);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.18);
+  z-index: 1000;
+  translate: (0, -10px);
+  transition: translate 1s ease-in-out;
+  border: .2em solid #00b894;
+  border-radius: 1em;
+  user-select: text;
+}
+#infoPopup:hover {
+  display: block;
+  translate: (0, 0);
+}
+
+#infoButton:hover + #infoPopup {
+  display: block;
+  translate: (0, 0);
+}
+
+#infoPopup p {
+  margin: 0 0 8px 0;
+  line-height: 1.4em;
+}
+#infoPopup a {
+  color: #00cec9;
+  text-decoration: underline;
+}
+#infoPopup a:hover {
+  text-decoration: underline;
+}
+
+.infoDetailsList {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+  padding: .5em 0;
+}
+
+.infoPopupTitle {
+  color: #00cec9;
+  margin: 0;
+  text-align: center;
+}
+.infoDetails{
+  margin: 0;
+  border-bottom: #222f3e 0.2em solid;
+  padding: .5em 0 .5em 0;
+  text-align: center;
+} 
+.infoDetails:last-of-type {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+.infoDetailValue {
+  color: #81ecec;
+}
+
+#optionsList{
+  cursor: pointer;
+  width: 100%;
 }

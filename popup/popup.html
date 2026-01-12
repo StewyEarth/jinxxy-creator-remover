@@ -8,6 +8,26 @@
 
 <body>
     <div id="popup-content" class="popup-container">
+        <button id="infoButton">i</button>
+        <div id="infoPopup" class="">
+            <h3 class="infoPopupTitle">About Jinxxy Companion:</h3>
+            <ul class="infoDetailsList">
+                <li class="infoDetails">
+                    Current Version: <span id="infoPopupVersion" class="infoDetailValue">1.0.5</span>
+                </li>
+                <li class="infoDetails">
+                    Last Currency update: <span id="infoPopupCurrencyLastUpdate" class="infoDetailValue">2026-01-09</span>
+                </li>
+                <li class="infoDetails">
+                    Created by: <a href="https://guns.lol/scoopdewoo" id="infoPopupCreator" class="infoDetailValue">Scoopdewoo</a>
+                </li>
+                <li class="infoDetails">
+                    Source code <a href="https://github.com/StewyEarth/Jinxxy-Creator-Remover" class="infoDetailValue">Github</a>
+                </li>
+            </ul>
+        </div>
+
+
         <h1 class="popup-title">Jinxxy companion</h1>
         <h3 class="section-title">Hide Creators</h3>
         <label for="creatorsToHide" class="label">Enter creator names to hide (comma separated):</label>
@@ -34,8 +54,9 @@
                 </li>
                 <li>
                     <label for="currencyselect">
-                        Choose currency:
+                        Convert currency:
                         <select id="currencyselect" class="popupselect">
+                            <option value="none">None</option>
                         </select>
                     </label>
                 </li>

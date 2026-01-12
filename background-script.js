@@ -26,8 +26,6 @@ function InitJinxxyCompanion() {
 }
 
 
-
-
 // Listen for messages from popup
 browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === "getCurrencies") {
