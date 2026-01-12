@@ -1,0 +1,268 @@
+{
+  "latestUpdate": "2026-01-09",
+  "currencies": {
+    "usd": {
+      "code": "usd",
+      "name": "United States Dollar",
+      "symbol": "$",
+      "rate": 1
+    },
+    "eur": {
+      "code": "eur",
+      "name": "Euro",
+      "symbol": "€",
+      "rate": 0.85948874
+    },
+    "jpy": {
+      "code": "jpy",
+      "name": "Japanese Yen",
+      "symbol": "¥",
+      "rate": 157.89384815
+    },
+    "gbp": {
+      "code": "gbp",
+      "name": "British Pound Sterling",
+      "symbol": "£",
+      "rate": 0.74595706
+    },
+    "aud": {
+      "code": "aud",
+      "name": "Australian Dollar",
+      "symbol": "A$",
+      "rate": 1.49565744
+    },
+    "cad": {
+      "code": "cad",
+      "name": "Canadian Dollar",
+      "symbol": "C$",
+      "rate": 1.39166452
+    },
+    "chf": {
+      "code": "chf",
+      "name": "Swiss Franc",
+      "symbol": "CHF",
+      "rate": 0.8009179
+    },
+    "cny": {
+      "code": "cny",
+      "name": "Chinese Yuan",
+      "symbol": "¥",
+      "rate": 6.98183682
+    },
+    "sek": {
+      "code": "sek",
+      "name": "Swedish Krona",
+      "symbol": "Sek",
+      "rate": 9.20663834
+    },
+    "nok": {
+      "code": "nok",
+      "name": "Norwegian Krone",
+      "symbol": "Nok",
+      "rate": 10.09748989
+    },
+    "dkk": {
+      "code": "dkk",
+      "name": "Danish Krone",
+      "symbol": "Dkk",
+      "rate": 6.42115743
+    },
+    "nzd": {
+      "code": "nzd",
+      "name": "New Zealand Dollar",
+      "symbol": "NZ$",
+      "rate": 1.74481728
+    },
+    "inr": {
+      "code": "inr",
+      "name": "Indian Rupee",
+      "symbol": "₹",
+      "rate": 90.27590866
+    },
+    "rub": {
+      "code": "rub",
+      "name": "Russian Ruble",
+      "symbol": "₽",
+      "rate": 79.0396628
+    },
+    "brl": {
+      "code": "brl",
+      "name": "Brazilian Real",
+      "symbol": "R$",
+      "rate": 5.37358913
+    },
+    "zar": {
+      "code": "zar",
+      "name": "South African Rand",
+      "symbol": "R",
+      "rate": 16.51356354
+    },
+    "try": {
+      "code": "try",
+      "name": "Turkish Lira",
+      "symbol": "₺",
+      "rate": 43.0843909
+    },
+    "krw": {
+      "code": "krw",
+      "name": "South Korean Won",
+      "symbol": "₩",
+      "rate": 1457.9821259
+    },
+    "mxn": {
+      "code": "mxn",
+      "name": "Mexican Peso",
+      "symbol": "MXN$",
+      "rate": 17.97754847
+    },
+    "sgd": {
+      "code": "sgd",
+      "name": "Singapore Dollar",
+      "symbol": "S$",
+      "rate": 1.28738729
+    },
+    "hkd": {
+      "code": "hkd",
+      "name": "Hong Kong Dollar",
+      "symbol": "HK$",
+      "rate": 7.79520227
+    },
+    "aed": {
+      "code": "aed",
+      "name": "United Arab Emirates Dirham",
+      "symbol": "د.إ",
+      "rate": 3.6725
+    },
+    "sar": {
+      "code": "sar",
+      "name": "Saudi Riyal",
+      "symbol": "ر.س",
+      "rate": 3.75
+    },
+    "pln": {
+      "code": "pln",
+      "name": "Polish Zloty",
+      "symbol": "zł",
+      "rate": 3.61999872
+    },
+    "thb": {
+      "code": "thb",
+      "name": "Thai Baht",
+      "symbol": "฿",
+      "rate": 31.42038976
+    },
+    "idn": {
+      "code": "idn",
+      "name": "Indonesian Rupiah",
+      "symbol": "Rp"
+    },
+    "czk": {
+      "code": "czk",
+      "name": "Czech Koruna",
+      "symbol": "Kč",
+      "rate": 20.87265262
+    },
+    "huf": {
+      "code": "huf",
+      "name": "Hungarian Forint",
+      "symbol": "Ft",
+      "rate": 331.42451217
+    },
+    "clp": {
+      "code": "clp",
+      "name": "Chilean Peso",
+      "symbol": "CLP$",
+      "rate": 893.68164508
+    },
+    "php": {
+      "code": "php",
+      "name": "Philippine Peso",
+      "symbol": "₱",
+      "rate": 59.18014573
+    },
+    "egp": {
+      "code": "egp",
+      "name": "Egyptian Pound",
+      "symbol": "£",
+      "rate": 47.27233407
+    },
+    "vnd": {
+      "code": "vnd",
+      "name": "Vietnamese Dong",
+      "symbol": "₫",
+      "rate": 26308.93732798
+    },
+    "myr": {
+      "code": "myr",
+      "name": "Malaysian Ringgit",
+      "symbol": "RM",
+      "rate": 4.07817756
+    },
+    "ron": {
+      "code": "ron",
+      "name": "Romanian Leu",
+      "symbol": "lei",
+      "rate": 4.3743861
+    },
+    "ars": {
+      "code": "ars",
+      "name": "Argentine Peso",
+      "symbol": "$",
+      "rate": 1465.86805511
+    },
+    "cop": {
+      "code": "cop",
+      "name": "Colombian Peso",
+      "symbol": "COL$",
+      "rate": 3714.93166961
+    },
+    "pkr": {
+      "code": "pkr",
+      "name": "Pakistani Rupee",
+      "symbol": "₨",
+      "rate": 280.16941056
+    },
+    "ngn": {
+      "code": "ngn",
+      "name": "Nigerian Naira",
+      "symbol": "₦",
+      "rate": 1424.45090859
+    },
+    "bdt": {
+      "code": "bdt",
+      "name": "Bangladeshi Taka",
+      "symbol": "৳",
+      "rate": 122.2593723
+    },
+    "uah": {
+      "code": "uah",
+      "name": "Ukrainian Hryvnia",
+      "symbol": "₴",
+      "rate": 43.01642876
+    },
+    "kes": {
+      "code": "kes",
+      "name": "Kenyan Shilling",
+      "symbol": "KSh",
+      "rate": 129.00789136
+    },
+    "dzd": {
+      "code": "dzd",
+      "name": "Algerian Dinar",
+      "symbol": "دج",
+      "rate": 130.1375
+    },
+    "ghs": {
+      "code": "ghs",
+      "name": "Ghanaian Cedi",
+      "symbol": "₵",
+      "rate": 10.72449164
+    },
+    "mad": {
+      "code": "mad",
+      "name": "Moroccan Dirham",
+      "symbol": "د.م.",
+      "rate": 9.23522775
+    }
+  }
+}

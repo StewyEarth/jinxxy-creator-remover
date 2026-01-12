@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-     <link rel="stylesheet" href="creator_hider.css">
+    <link rel="stylesheet" href="popup.css">
 </head>
+
 <body>
     <div id="popup-content" class="popup-container">
         <h1 class="popup-title">Jinxxy companion</h1>
@@ -21,19 +23,27 @@
                 <li>
                     <label for="sortByLatestCheckbox">
                         Fix links to sort by latest
-                    <input type="checkbox" id="sortByLatestCheckbox" class="checkbox">
+                        <input type="checkbox" id="sortByLatestCheckbox" class="checkbox">
                     </label>
                 </li>
                 <li>
                     <label for="hidePromotedCheckbox">
                         Hide promoted listings
-                    <input type="checkbox" id="hidePromotedCheckbox" class="checkbox">
+                        <input type="checkbox" id="hidePromotedCheckbox" class="checkbox">
+                    </label>
+                </li>
+                <li>
+                    <label for="currencyselect">
+                        Choose currency:
+                        <select id="currencyselect" class="popupselect">
+                        </select>
                     </label>
                 </li>
             </ul>
 
         </details>
     </div>
-    <script src="creator_hider_config.js"></script>
+    <script src="popup.js"></script>
 </body>
-</html
+
+</html>
