@@ -1,13 +1,14 @@
 const storage = (typeof browser !== 'undefined' && browser.storage) ? browser.storage : chrome.storage;
+const browserAPI = (typeof browser !== 'undefined') ? browser : chrome;
 let currenciesList = {};
 let lastupdateCheckHour = null;
 
 
-browser.runtime.onInstalled.addListener(() => {
+browserAPI.runtime.onInstalled.addListener(() => {
     InitJinxxyCompanion();
 });
 
-browser.runtime.onStartup.addListener(() => {
+browserAPI.runtime.onStartup.addListener(() => {
     InitJinxxyCompanion();
 });
 
@@ -27,7 +28,7 @@ function InitJinxxyCompanion() {
 
 
 // Listen for messages from popup
-browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
+browserAPI.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === "getCurrencies") {
         sendResponse({ currencies: currenciesList });
     }
@@ -40,7 +41,7 @@ browser.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
 
 function loadCurrencies() {
-    fetch(browser.runtime.getURL('/json/currencies.json'))
+    fetch(browserAPI.runtime.getURL('/json/currencies.json'))
         .then(response => response.json())
         .then(data => {
             currenciesList = data;

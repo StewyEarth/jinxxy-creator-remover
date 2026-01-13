@@ -91,18 +91,16 @@ function InitJinxxyCompanion() {
 
 // Adjust page URLs to include sort=latest if needed
 function fixLinkSorting() {
-  let links = document.querySelectorAll("a");
+  let links = document.querySelectorAll(`a[href*="/market"]`);
   links.forEach(link => {
-    if (link.href.includes("market") && !link.href.includes("sort") && !link.href.includes("page")) {
-      if (sortByLatest) {
-        if (!link.href.includes("sort=latest")) {
-          if (link.href.includes("?")) {
-            link.href = link.href + "&sort=latest";
-          } else {
-            link.href = link.href + "?sort=latest";
-          }
-          link.classList.add("updatedLinkLocation");
+    if (sortByLatest) {
+      if (!link.href.includes("sort=latest")) {
+        if (link.href.includes("?")) {
+          link.href = link.href + "&sort=latest";
+        } else {
+          link.href = link.href + "?sort=latest";
         }
+        link.classList.add("updatedLinkLocation");
       }
     }
   });
@@ -110,7 +108,9 @@ function fixLinkSorting() {
 
 function addTagSeachbox() {
   let filterSideBar = document.querySelector('div.space-y-8.pb-16')
+  if(!filterSideBar) { return; }
   let filterOptions = filterSideBar.querySelectorAll('div');
+  if(filterOptions.length == 0 || !filterOptions) { return; }
   let url = new URL(window.location.href);
   let urlSearchedTags = url.searchParams.get("tags");
   if (urlSearchedTags) {
@@ -131,32 +131,45 @@ function addTagSeachbox() {
         tagSearchBox.style.marginBottom = "1em";
         tagSearchBox.className = "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50";
         element.after(tagSearchBox);
-
+        let tagsection = tagSearchBox.nextSibling;
 
         if (urlSearchedTags && urlSearchedTags.length > 0) {
           // Get tags from URL and display them in the tag section
           urlSearchedTags.forEach(tag => {
-            console.log("Tag from URL:", tag);
-            let newTagDiv = document.createElement("div");
-            newTagDiv.textContent = tag;
-            newTagDiv.className = "inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset bg-green-50 text-green-700 ring-green-600/20 dark:bg-green-400/10 dark:text-green-400 dark:ring-green-400/20 cursor-pointer";
-            let tagsection = tagSearchBox.nextSibling;
             let tagExists = false;
+            let newTagDiv = document.createElement("div");
+            newTagDiv.textContent = toTitleCase(tag);
+            newTagDiv.className = "inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset bg-green-50 text-green-700 ring-green-600/20 dark:bg-green-400/10 dark:text-green-400 dark:ring-green-400/20 cursor-pointer";
+            newTagDiv.classList.add("active-tag");
+            // Add click event to remove tag
+            newTagDiv.addEventListener("click", () => {
+              // Remove tag from URL and refresh
+              let currentTags = url.searchParams.get("tags").split(",").map(name => name.trim()).filter(name => name !== "");
+              let updatedTags = currentTags.filter(t => t.toLowerCase() !== tag.toLowerCase());
+              if (updatedTags.length > 0) {
+                url.searchParams.set("tags", updatedTags.join(","));
+              } else {
+                url.searchParams.delete("tags");
+              }
+              window.location.href = url.href;
+            });
+
+            // Check if tag already exists (case insensitive)
             tagsection.querySelectorAll("div").forEach(existingTag => {
-              if (existingTag.textContent.toLowerCase() === tag) {
+              // If tag exists, mark it as active and remove the new tag
+              if (existingTag.textContent.toLowerCase() === tag.toLowerCase()) {
                 existingTag.textContent = toTitleCase(tag);
+                existingTag.classList.add("active-tag");
                 tagExists = true;
                 newTagDiv.remove();
+              } else {
+                existingTag.classList.add("inactive-tag");
               }
             });
-            if (tagsection.childNodes.length < 1) {
-              if (!tagExists) {
-                tagsection.prepend(newTagDiv);
-              } else {
-                tagsection.appendChild(newTagDiv);
-              }
+            // Prepend the new tag if it doesn't already exist
+            if (!tagExists) {
+              tagsection.prepend(newTagDiv);
             }
-
           });
         }
         // Add event listener for Enter key to add tags
@@ -173,6 +186,8 @@ function addTagSeachbox() {
             window.location.href = url.href;
           }
         });
+        // Exit the forEach loops when right section is found and processed
+        return;
       }
     });
   });
@@ -185,14 +200,49 @@ function toTitleCase(str) {
   );
 }
 
-function fixBottomsLink() {
+// Fix Broken links
+function fixBrokenLinks() {
   let bottomsLink = document.querySelector(`a[href*="/clothing?type=bottoms"]`);
   if (bottomsLink) {
     let url = new URL(bottomsLink.href);
     url.searchParams.set('type', 'leggings,pants,shorts,skirt,bottom');
     bottomsLink.href = url;
   };
+
+  // add/fix link to creator if they are on market page
+  if (document.location.href.includes("/market")) {
+    let listings = getMarketListings();
+    listings.forEach((listing) => {
+      if (listing != null) {
+        let creatorInfo = listing.querySelector('div.flex.shrink-0.items-center.gap-x-1')
+        if (creatorInfo != null) {
+          if (creatorInfo.querySelector('a') || !creatorInfo.querySelector('img')) {
+            return; // Creator link already exists or not a post by a creator with an account on Jinxxy
+          }
+          let creatorName = creatorInfo.querySelector('span.text-sm')
+          if (creatorName != null) {
+            let creator = creatorName.textContent.trim().toLowerCase();
+            let creatorLink = document.createElement("a");
+            creatorLink.href = `https://jinxxy.com/${creator}`;
+            creatorLink.style.display = "inline-block";
+            creatorName.parentElement.appendChild(creatorLink);
+            creatorLink.appendChild(creatorName);
+          }
+        }
+      }
+    });
+  }
 }
+
+function getMarketListings() {
+  let listings = document.querySelectorAll("#mgRudj .rounded-lg");
+  if (listings != null && listings.length > 0) {
+    return listings;
+  } else {
+    return [];
+  }
+}
+
 
 document.addEventListener('click', function (e) {
   let link = e.target.closest('a.updatedLinkLocation');
@@ -203,13 +253,18 @@ document.addEventListener('click', function (e) {
   }
 }, true);
 
+// Hide promoted listings from the page
 function HidePromotedListings() {
-  let listings = document.querySelectorAll(".rounded-lg"); // Replace with actual class
+  let listings = getMarketListings();
   if (hidePromoted) {
     listings.forEach(listing => {
-      if (listing != null) {
-        if (listing.querySelector('[aria-label="Promoted Product"]')) {
-          listing.classList.add("hidden");
+      if (listing.querySelector('[aria-label="Promoted Product"]')) {
+        // Stop here if already hidden
+        if (listing.querySelector('[aria-label="Promoted Product"]').classList.contains("hidden")) return;
+        // Hide promoted listing
+        listing.classList.add("hidden");
+        // Keep track of hidden promoted posts to unhide later
+        if (!hiddenPromotedPosts.includes(listing) && listing.classList.contains("hidden")) {
           hiddenPromotedPosts.push(listing);
         }
       }
@@ -222,9 +277,10 @@ function HidePromotedListings() {
   };
 };
 
+// Update listing prices based on selected currency
 async function updateListingsPrice() {
   if (document.location.href.includes("market")) {
-    let listings = document.querySelectorAll("#mgRudj .rounded-lg");
+    let listings = getMarketListings();
     listings.forEach((listing) => {
       if (listing != null) {
         let price = listing.querySelector('span.ml-auto.font-semibold');
@@ -264,18 +320,14 @@ async function updateListingsPrice() {
             price.dataset.updatedCurrency = null;
             return;
           }
-          // if (price.dataset.originalcurrency != null && selectedCurrency == price.dataset.originalcurrency && price.dataset.updatedCurrency != selectedCurrency && price.textContent != priceText) {
-          //   console.log("Reverting price display");
-          //   price.innerHTML = priceText;
-          //   price.style = "";
-          //   price.dataset.updatedCurrency = null;
-          // };
         };
       };
     });
   };
 };
 
+
+// Convert currency based on rates in currenciesList
 function convertCurrency(amount, fromCurrency, toCurrency) {
   let fromRate = null;
   let toRate = null;
@@ -293,6 +345,7 @@ function convertCurrency(amount, fromCurrency, toCurrency) {
   return (amount / fromRate) * toRate;
 };
 
+// Hide creators from the page
 function HideCreator(creatorNames) {
   // Hide creators in New Arrivals section
   let NewArrivals = document.querySelector('.py-12');
@@ -324,7 +377,7 @@ function HideCreator(creatorNames) {
     });
   }
   // Hide creators in main listings
-  let listings = document.querySelectorAll(".text-card-foreground");
+  let listings = getMarketListings();
   listings.forEach((listing) => {
     if (listing != null) {
       let userSpan = listing.querySelector(".decoration-2 span");
@@ -338,11 +391,12 @@ function HideCreator(creatorNames) {
   })
 };
 
+// Observe DOM changes to re-apply hiding and fixes (needed since site uses dynamic loading)
 const observer = new MutationObserver(() => {
   HideCreator(hiddenCreators);
   HidePromotedListings();
   fixLinkSorting();
-  fixBottomsLink();
+  fixBrokenLinks();
   addTagSeachbox();
   if (!isUpdatingPrices) {
     isUpdatingPrices = true;
@@ -354,8 +408,23 @@ const observer = new MutationObserver(() => {
     }, priceupdateInterval);
   }
 });
-
+// Start observing the document body for changes
 observer.observe(document.body, {
   subtree: true,
   childList: true,
 });
+
+
+// CSS Styles to be injected for things like the tag elements for hover effects
+let style = document.createElement('style');
+style.innerText = `
+.active-tag:hover {
+ background-color: #a61e1e; !important;
+ color: white; !important;
+}
+
+.inactive-tag:hover {
+ background-color: rgba(74, 222, 128, 0.29); 
+}
+`;
+document.head.appendChild(style);

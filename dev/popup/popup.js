@@ -1,4 +1,5 @@
 const storage = (typeof browser !== 'undefined' && browser.storage) ? browser.storage : chrome.storage;
+const browserAPI = (typeof browser !== 'undefined') ? browser : chrome;
 const creatorInput = document.getElementById("creatorsToHide");
 const saveButton = document.getElementById("saveButton");
 const statusText = document.getElementById("statusText");
@@ -64,6 +65,8 @@ function InitJinxxyCompanion() {
   }).then(() => {
     addCurrencyOptions();
   });
+  const manifest = (typeof browser !== 'undefined' ? browser : chrome).runtime.getManifest();
+  document.getElementById("infoPopupVersion").textContent = manifest.version;
 }
 
 function addCurrencyOptions() {
@@ -78,43 +81,40 @@ function addCurrencyOptions() {
   }
 }
 
+function queryTabs(queryInfo) {
+  if (browserAPI.tabs.query.length === 1) {
+    // Firefox/WebExtension: returns Promise
+    return browserAPI.tabs.query(queryInfo);
+  } else {
+    // Chrome: uses callback
+    return new Promise((resolve) => {
+      browserAPI.tabs.query(queryInfo, resolve);
+    });
+  }
+}
+
+function sendMessageToActiveTab(message) {
+  queryTabs({ active: true, currentWindow: true }).then((tabs) => {
+    let allowedHosts = ["jinxxy.com", "www.jinxxy.com"];
+    let url = new URL(tabs[0].url);
+    if (allowedHosts.includes(url.hostname)) {
+      browserAPI.tabs.sendMessage(tabs[0].id, message);
+    }
+  });
+}
+
 currencySelect.addEventListener("change", () => {
   const newCurrency = currencySelect.value;
   const message = { action: "UpdateCurrency", value: currencySelect.value };
   storage.local.set({ selectedCurrency: newCurrency });
   console.log("Selected currency:", newCurrency);
-
-  if (typeof browser !== "undefined" && browser.tabs) {
-    browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
-      if (tabs[0].url.includes("jinxxy.com")) {
-        browser.tabs.sendMessage(tabs[0].id, message);
-      }
-    });
-  } else if (typeof chrome !== "undefined" && chrome.tabs) {
-    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-      if (tabs[0].url.includes("jinxxy.com")) {
-        chrome.tabs.sendMessage(tabs[0].id, message);
-      }
-    });
-  }
+  sendMessageToActiveTab(message);
 });
 
 // Send message to content script to update hidden creators
 function sendUpdateMessage() {
   const message = { action: "updateCreators" };
-  if (typeof browser !== "undefined" && browser.tabs) {
-    browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
-      if (tabs[0].url.includes("jinxxy.com")) {
-        browser.tabs.sendMessage(tabs[0].id, message);
-      }
-    });
-  } else if (typeof chrome !== "undefined" && chrome.tabs) {
-    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-      if (tabs[0].url.includes("jinxxy.com")) {
-        chrome.tabs.sendMessage(tabs[0].id, message);
-      }
-    });
-  }
+  sendMessageToActiveTab(message);
 }
 
 // Scroll to options on click
@@ -125,36 +125,14 @@ optionsList.addEventListener("click", () => {
 // Event Listeners
 sortByLatestCheckbox.addEventListener("change", () => {
   const message = { action: "toggleSortByLatest", value: sortByLatestCheckbox.checked };
-  if (typeof browser !== "undefined" && browser.tabs) {
-    browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
-      if (tabs[0].url.includes("jinxxy.com")) {
-        browser.tabs.sendMessage(tabs[0].id, message);
-      }
-    });
-  } else if (typeof chrome !== "undefined" && chrome.tabs) {
-    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-      if (tabs[0].url.includes("jinxxy.com")) {
-        chrome.tabs.sendMessage(tabs[0].id, message);
-      }
-    });
-  }
+  sendMessageToActiveTab(message);
+  storage.local.set({ sortByLatest: sortByLatestCheckbox.checked });
 });
 
 hidePromotedCheckbox.addEventListener("change", () => {
   const message = { action: "toggleHidePromoted", value: hidePromotedCheckbox.checked };
-  if (typeof browser !== "undefined" && browser.tabs) {
-    browser.tabs.query({ active: true, currentWindow: true }).then((tabs) => {
-      if (tabs[0].url.includes("jinxxy.com")) {
-        browser.tabs.sendMessage(tabs[0].id, message);
-      }
-    });
-  } else if (typeof chrome !== "undefined" && chrome.tabs) {
-    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-      if (tabs[0].url.includes("jinxxy.com")) {
-        chrome.tabs.sendMessage(tabs[0].id, message);
-      }
-    });
-  }
+  sendMessageToActiveTab(message);
+  storage.local.set({ hidePromoted: hidePromotedCheckbox.checked });
 });
 
 creatorInput.addEventListener("keydown", (event) => {

@@ -1,0 +1,25 @@
+{
+  "name": "jinxxycompanion",
+  "version": "1.0.5",
+  "description": "script for managing the manifests for the extension",
+  "main": "build.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "node build.js",
+    "dev firefox": "node build.js firefox",
+    "dev chrome": "node build.js chrome"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/StewyEarth/jinxxy-creator-remover.git"
+  },
+  "author": "Scoopdewoo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/StewyEarth/jinxxy-creator-remover/issues"
+  },
+  "homepage": "https://github.com/StewyEarth/jinxxy-creator-remover#readme",
+  "dependencies": {
+    "archiver": "^7.0.1"
+  }
+}
