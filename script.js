@@ -75,4 +75,16 @@ async function buildAll() {
   }
 }
 
-buildAll();
+
+// Script entry point
+if (!process.argv[2]) {
+  console.error("No target specified. Use 'chrome' or 'firefox'.");
+  process.exit(1);
+} else if (process.argv[2] == "build") {
+  buildAll();
+} else if (process.argv[2] == "chrome" || process.argv[2] == "firefox") {
+  buildZip(process.argv[2]);
+}
+
+
+

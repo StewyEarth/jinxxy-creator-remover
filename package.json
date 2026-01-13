@@ -2,12 +2,12 @@
   "name": "jinxxycompanion",
   "version": "1.0.5",
   "description": "script for managing the manifests for the extension",
-  "main": "build.js",
+  "main": "script.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "node build.js",
-    "dev firefox": "node build.js firefox",
-    "dev chrome": "node build.js chrome"
+    "build": "node script.js build",
+    "dev-firefox": "node script.js firefox",
+    "dev-chrome": "node script.js chrome"
   },
   "repository": {
     "type": "git",
