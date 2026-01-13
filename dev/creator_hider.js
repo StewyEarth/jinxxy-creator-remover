@@ -77,13 +77,6 @@ function InitJinxxyCompanion() {
       updateListingsPrice();
     }
   }
-
-  // if (typeof browser !== "undefined" && browser.runtime && browser.runtime.onMessage) {
-  //   browserAPI.runtime.onMessage.addListener(popUpHandler);
-  // } else if (typeof chrome !== "undefined" && chrome.runtime && chrome.runtime.onMessage) {
-  //   chrome.runtime.onMessage.addListener(popUpHandler);
-  // }
-  // Listen for messages from the popup
   if (typeof browserAPI !== "undefined" && browserAPI.runtime && browserAPI.runtime.onMessage) {
     browserAPI.runtime.onMessage.addListener(popUpHandler);
   }
@@ -108,9 +101,9 @@ function fixLinkSorting() {
 
 function addTagSeachbox() {
   let filterSideBar = document.querySelector('div.space-y-8.pb-16')
-  if(!filterSideBar) { return; }
+  if (!filterSideBar) { return; }
   let filterOptions = filterSideBar.querySelectorAll('div');
-  if(filterOptions.length == 0 || !filterOptions) { return; }
+  if (filterOptions.length == 0 || !filterOptions) { return; }
   let url = new URL(window.location.href);
   let urlSearchedTags = url.searchParams.get("tags");
   if (urlSearchedTags) {
@@ -308,7 +301,6 @@ async function updateListingsPrice() {
             }
           }
           if (price.dataset.originalcurrency != null && selectedCurrency == price.dataset.originalcurrency && price.dataset.updatedCurrency != selectedCurrency) {
-            console.log("Reverting price display");
             price.innerHTML = priceText;
             price.style = "";
             price.dataset.updatedCurrency = null;
