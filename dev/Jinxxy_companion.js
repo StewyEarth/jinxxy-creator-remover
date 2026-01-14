@@ -336,7 +336,7 @@ async function updateListingsPrice() {
           updateTextPrices(priceElement);
           priceElement.classList.add("JC-updatedPrice-left");
         });
-      }else if (profileStorePagePrices != null && profileStorePagePrices.length > 0) {
+      } else if (profileStorePagePrices != null && profileStorePagePrices.length > 0) {
         // Multiple prices found on profile store page
         profileStorePagePrices.forEach(priceElement => {
           updateTextPrices(priceElement);
@@ -379,9 +379,22 @@ function updateTextPrices(PriceElement) {
   if (currencycode != selectedCurrency && PriceElement.dataset.updatedCurrency != selectedCurrency && selectedCurrency != PriceElement.dataset.originalcurrency) {
     let convertedAmount = convertCurrency(amount, currencycode, selectedCurrency);
     console.log("Converted amount:", convertedAmount);
+    let newPrice = null;
+    if (convertedAmount != null) {
+      if (convertedAmount == 0) {
+        newPrice = `Free`;
+      } else {
+        convertedAmount = convertedAmount.toFixed(2);
+        newPrice = `${convertedAmount} ${selectedCurrency.toUpperCase()}`;
+      }
+    } else {
+      newPrice = "conversion error";
+    }
+
+    console.log("Converted amount fixed to 2 decimals:", convertedAmount);
     if (convertedAmount != null) {
       PriceElement.classList.add("JC-updatedPrice");
-      PriceElement.innerHTML = `<span class="JC-oldprice">(${priceText})</span><br>~${convertedAmount.toFixed(2)} ${selectedCurrency.toUpperCase()}`;
+      PriceElement.innerHTML = `<span class="JC-oldprice">(${priceText})</span><br>~${newPrice}`;
       PriceElement.dataset.updatedCurrency = selectedCurrency;
     }
   }
