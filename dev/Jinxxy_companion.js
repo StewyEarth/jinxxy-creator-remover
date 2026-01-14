@@ -1,15 +1,20 @@
 const storage = (typeof browser !== 'undefined' && browser.storage) ? browser.storage : chrome.storage;
 const browserAPI = (typeof browser !== 'undefined') ? browser : chrome;
 let tagsection = null;
-let hiddenCreators = [];
-let sortByLatest = false;
-let hidePromoted = false;
 let hiddenCreatorPosts = [];
 let hiddenPromotedPosts = [];
 let currenciesList = {};
-let selectedCurrency = "usd";
 let priceupdateInterval = 1000;
 let isUpdatingPrices = false;
+
+// User Preferences
+let hiddenCreators = [];
+let sortByLatest = false;
+let hidePromoted = false;
+let fixBrokenLinks = true;
+let searchableTags = true;
+let selectedCurrency = "usd";
+
 
 InitJinxxyCompanion();
 
@@ -77,6 +82,23 @@ function InitJinxxyCompanion() {
       selectedCurrency = request.value;
       storage.local.set({ selectedCurrency: selectedCurrency });
       updateListingsPrice();
+    }
+    if (request.action === "toggleFixBrokenLinks") {
+      fixBrokenLinks = request.value;
+      storage.local.set({ fixBrokenLinks: fixBrokenLinks });
+      fixBrokenLinksies();
+    }
+    if (request.action === "toggleSearchableTags") {
+      searchableTags = request.value;
+      storage.local.set({ searchableTags: searchableTags });
+      if (searchableTags) {
+        addTagSeachbox();
+      } else {
+        let existingTagBox = document.getElementById("tagSearchBox");
+        if (existingTagBox) {
+          existingTagBox.remove();
+        }
+      }
     }
   }
   if (typeof browserAPI !== "undefined" && browserAPI.runtime && browserAPI.runtime.onMessage) {
@@ -236,7 +258,7 @@ function toTitleCase(str) {
 }
 
 // Fix Broken links
-function fixBrokenLinks() {
+function fixBrokenLinksies() {
   let bottomsLink = document.querySelector(`a[href*="/clothing?type=bottoms"]`);
   if (bottomsLink) {
     let url = new URL(bottomsLink.href);
@@ -504,10 +526,16 @@ let isAddingSeachbox = false;
 const observer = new MutationObserver(() => {
   console.log("DOM changed, re-applying Jinxxy Companion features...");
   HideCreator(hiddenCreators);
-  HidePromotedListings();
-  fixLinkSorting();
-  fixBrokenLinks();
-  if (!isAddingSeachbox && !document.querySelector('#tagbox')) {
+  if (hidePromoted) {
+    HidePromotedListings();
+  }
+  if (fixLinkSorting) {
+    fixLinkSorting();
+  }
+  if (fixBrokenLinks) {
+    fixBrokenLinksies();
+  }
+  if (searchableTags && !isAddingSeachbox && !document.querySelector('#tagbox')) {
     console.log("Adding tag searchbox...");
     isAddingSeachbox = true;
     setTimeout(() => {

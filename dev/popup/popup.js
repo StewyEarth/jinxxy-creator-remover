@@ -11,12 +11,19 @@ const hidePromotedCheckbox = document.getElementById("hidePromotedCheckbox");
 const optionsList = document.getElementById("optionsList");
 const currencySelect = document.getElementById("currencyselect");
 const infoPopupCurrencyLastUpdate = document.getElementById("infoPopupCurrencyLastUpdate");
+const searchableTagsCheckbox = document.getElementById("searchableTagsCheckbox");
+const fixBrokenLinksCheckbox = document.getElementById("fixBrokenLinksCheckbox");
 let lastupdateCheck = null;
+let currenciesList = {};
+
+// User Preferences
 let hiddenCreators = [];
 let sortByLatest = false;
 let hidePromoted = false;
-let currenciesList = {};
+let fixBrokenLinks = true;
+let searchableTags = true;
 let selectedCurrency = "usd";
+
 
 function onError(error) {
   console.log(error);
@@ -38,9 +45,29 @@ function InitJinxxyCompanion() {
   storage.local.get("sortByLatest").then((result) => {
     if (result.sortByLatest !== undefined) {
       sortByLatestCheckbox.checked = result.sortByLatest;
+      sortByLatest = result.sortByLatest;
     } else {
       sortByLatest = false;
       storage.local.set({ sortByLatest: false });
+    }
+  });
+
+  storage.local.get("fixBrokenLinks").then((result) => {
+    if (result.fixBrokenLinks !== undefined) {
+      fixBrokenLinksCheckbox.checked = result.fixBrokenLinks;
+      fixBrokenLinks = result.fixBrokenLinks;
+    } else {
+      fixBrokenLinks = true;
+      storage.local.set({ fixBrokenLinks: true });
+    }
+  });
+  storage.local.get("searchableTags").then((result) => {
+    if (result.searchableTags !== undefined) {
+      searchableTagsCheckbox.checked = result.searchableTags;
+      searchableTags = result.searchableTags;
+    } else {
+      searchableTags = true;
+      storage.local.set({ searchableTags: true });
     }
   });
 
@@ -67,6 +94,7 @@ function InitJinxxyCompanion() {
   storage.local.get("hidePromoted").then((result) => {
     if (result.hidePromoted !== undefined) {
       hidePromotedCheckbox.checked = result.hidePromoted;
+      hidePromoted = result.hidePromoted;
     } else {
       hidePromoted = false;
       storage.local.set({ hidePromoted: false });
@@ -91,6 +119,25 @@ function InitJinxxyCompanion() {
   const manifest = (typeof browser !== 'undefined' ? browser : chrome).runtime.getManifest();
   document.getElementById("infoPopupVersion").textContent = manifest.version;
 }
+
+currencySelect.addEventListener("change", () => {
+  const newCurrency = currencySelect.value;
+  const message = { action: "UpdateCurrency", value: currencySelect.value };
+  storage.local.set({ selectedCurrency: newCurrency });
+  sendMessageToActiveTab(message);
+});
+
+searchableTagsCheckbox.addEventListener("change", () => {
+  const message = { action: "toggleSearchableTags", value: searchableTagsCheckbox.checked };
+  sendMessageToActiveTab(message);
+  storage.local.set({ searchableTags: searchableTagsCheckbox.checked });
+});
+
+fixBrokenLinksCheckbox.addEventListener("change", () => {
+  const message = { action: "toggleFixBrokenLinks", value: fixBrokenLinksCheckbox.checked };
+  sendMessageToActiveTab(message);
+  storage.local.set({ fixBrokenLinks: fixBrokenLinksCheckbox.checked });
+});
 
 function addCurrencyOptions() {
   if (currenciesList && currenciesList.currencies) {
@@ -119,20 +166,17 @@ function queryTabs(queryInfo) {
 
 function sendMessageToActiveTab(message) {
   queryTabs({ active: true, currentWindow: true }).then((tabs) => {
+    console.log("Active tab:", tabs[0].id , tabs[0].url, tabs[0].title + " message: " + message);
+    console.log(message);
     let allowedHosts = ["jinxxy.com", "www.jinxxy.com"];
     let url = new URL(tabs[0].url);
     if (allowedHosts.includes(url.hostname)) {
       browserAPI.tabs.sendMessage(tabs[0].id, message);
     }
-  });
+  }).catch(onError);
 }
 
-currencySelect.addEventListener("change", () => {
-  const newCurrency = currencySelect.value;
-  const message = { action: "UpdateCurrency", value: currencySelect.value };
-  storage.local.set({ selectedCurrency: newCurrency });
-  sendMessageToActiveTab(message);
-});
+
 
 // Send message to content script to update hidden creators
 function sendUpdateMessage() {
