@@ -1,5 +1,6 @@
 const storage = (typeof browser !== 'undefined' && browser.storage) ? browser.storage : chrome.storage;
 const browserAPI = (typeof browser !== 'undefined') ? browser : chrome;
+let tagsection = null;
 let hiddenCreators = [];
 let sortByLatest = false;
 let hidePromoted = false;
@@ -53,6 +54,7 @@ function InitJinxxyCompanion() {
   });
 
   function popUpHandler(request, sender, sendResponse) {
+    console.log("Received message in content script:", request);
     if (request.action === "updateCreators") {
       storage.local.get("creators").then((result) => {
         if (result.creators) {
@@ -109,81 +111,121 @@ function addTagSeachbox() {
   if (urlSearchedTags) {
     urlSearchedTags = urlSearchedTags.split(",").map(name => name.trim()).filter(name => name !== "")
   }
+
   if (document.getElementById("tagSearchBox")) {
     return; // Tag search box already exists
   }
-  // Find the Product Tags filter option and add a search box
+
+  let productTagsHeader = null;
   filterOptions.forEach(option => {
     option.childNodes.forEach(element => {
       if (element.textContent && element.textContent.toLowerCase().includes("product tags")) {
-        let tagSearchBox = document.createElement("input");
-        tagSearchBox.type = "text";
-        tagSearchBox.id = "tagSearchBox";
-        tagSearchBox.placeholder = "Search tags...";
-        tagSearchBox.autocomplete = "off";
-        tagSearchBox.style.marginBottom = "1em";
-        tagSearchBox.className = "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50";
-        element.after(tagSearchBox);
-        let tagsection = tagSearchBox.nextSibling;
-
-        if (urlSearchedTags && urlSearchedTags.length > 0) {
-          // Get tags from URL and display them in the tag section
-          urlSearchedTags.forEach(tag => {
-            let tagExists = false;
-            let newTagDiv = document.createElement("div");
-            newTagDiv.textContent = toTitleCase(tag);
-            newTagDiv.className = "inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset bg-green-50 text-green-700 ring-green-600/20 dark:bg-green-400/10 dark:text-green-400 dark:ring-green-400/20 cursor-pointer";
-            newTagDiv.classList.add("active-tag");
-            // Add click event to remove tag
-            newTagDiv.addEventListener("click", () => {
-              // Remove tag from URL and refresh
-              let currentTags = url.searchParams.get("tags").split(",").map(name => name.trim()).filter(name => name !== "");
-              let updatedTags = currentTags.filter(t => t.toLowerCase() !== tag.toLowerCase());
-              if (updatedTags.length > 0) {
-                url.searchParams.set("tags", updatedTags.join(","));
-              } else {
-                url.searchParams.delete("tags");
-              }
-              window.location.href = url.href;
-            });
-
-            // Check if tag already exists (case insensitive)
-            tagsection.querySelectorAll("div").forEach(existingTag => {
-              // If tag exists, mark it as active and remove the new tag
-              if (existingTag.textContent.toLowerCase() === tag.toLowerCase()) {
-                existingTag.textContent = toTitleCase(tag);
-                existingTag.classList.add("active-tag");
-                tagExists = true;
-                newTagDiv.remove();
-              } else {
-                existingTag.classList.add("inactive-tag");
-              }
-            });
-            // Prepend the new tag if it doesn't already exist
-            if (!tagExists) {
-              tagsection.prepend(newTagDiv);
-            }
-          });
-        }
-        // Add event listener for Enter key to add tags
-        tagSearchBox.addEventListener("keyup", (event) => {
-          if (event.key === "Enter") {
-            let searchTags = tagSearchBox.value.toLowerCase();
-            if (urlSearchedTags == null) {
-              urlSearchedTags = [];
-            }
-            let mergedTags = urlSearchedTags.concat(searchTags.split(",").map(name => name.trim()).filter(name => name !== ""));
-            // Remove duplicate tags
-            mergedTags = [...new Set(mergedTags)];
-            url.searchParams.set("tags", mergedTags.join(","));
-            window.location.href = url.href;
-          }
-        });
-        // Exit the forEach loops when right section is found and processed
+        productTagsHeader = element;
         return;
       }
-    });
+    })
   });
+
+  // Find the Product Tags filter option and add a search box
+  if (productTagsHeader == null) { return; }
+  let tagSearchBox = document.createElement("input");
+  tagSearchBox.type = "text";
+  tagSearchBox.id = "tagSearchBox";
+  tagSearchBox.placeholder = "Search tags...";
+  tagSearchBox.autocomplete = "off";
+  tagSearchBox.style.marginBottom = "1em";
+  tagSearchBox.className = "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50";
+  productTagsHeader.after(tagSearchBox);
+  tagsection = tagSearchBox.nextSibling;
+
+  if (urlSearchedTags && urlSearchedTags.length > 0) {
+    // Get tags from URL and display them in the tag section
+    urlSearchedTags.forEach(tag => {
+      let tagExists = false;
+      let newTagDiv = document.createElement("div");
+      newTagDiv.textContent = toTitleCase(tag);
+      newTagDiv.className = "inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset bg-green-50 text-green-700 ring-green-600/20 dark:bg-green-400/10 dark:text-green-400 dark:ring-green-400/20 cursor-pointer";
+      newTagDiv.classList.add("active-tag");
+      // Add click event to remove tag
+      newTagDiv.addEventListener("click", () => {
+        // Remove tag from URL and refresh
+        let currentTags = url.searchParams.get("tags").split(",").map(name => name.trim()).filter(name => name !== "");
+        let updatedTags = currentTags.filter(t => t.toLowerCase() !== tag.toLowerCase());
+        newTagDiv.classList.add("active-tag");
+        if (updatedTags.length > 0) {
+          url.searchParams.set("tags", updatedTags.join(","));
+        } else {
+          url.searchParams.delete("tags");
+        }
+        window.location.href = url.href;
+      });
+
+      // Check if tag already exists (case insensitive)
+      tagsection.querySelectorAll("div").forEach(existingTag => {
+        // If tag exists, mark it as active and remove the new tag
+        if (existingTag.textContent.toLowerCase() === tag.toLowerCase() && (!existingTag.classList.contains("active-tag") && !existingTag.classList.contains("inactive-tag"))) {
+          console.log("Tag already exists:", existingTag.textContent);
+          console.log("adding active tag for:", existingTag.textContent);
+          existingTag.textContent = toTitleCase(tag);
+          existingTag.classList.add("active-tag");
+          tagsection.prepend(existingTag);
+          tagExists = true;
+          newTagDiv.remove();
+        } else if((existingTag.textContent.toLowerCase() !== tag.toLowerCase()) || existingTag.classList.contains("active-tag")) {
+          console.log("adding inactive tag for:", existingTag.textContent);
+          existingTag.classList.add("inactive-tag");
+          existingTag.addEventListener("click", () => {
+            tagsection.prepend(existingTag);
+          })
+        }
+      });
+
+      // Prepend the new tag if it doesn't already exist
+      if (!tagExists) {
+        tagsection.prepend(newTagDiv);
+      }
+    });
+  }
+  cleanUptaglist();
+  // Add event listener for Enter key to add tags
+  tagSearchBox.addEventListener("keyup", (event) => {
+    if (event.key === "Enter") {
+      let searchTags = tagSearchBox.value.toLowerCase();
+
+      if (urlSearchedTags == null) {
+        urlSearchedTags = [];
+      }
+      let currentTags = url.searchParams.get("tags").split(",").map(name => name.trim()).filter(name => name !== "");
+      let mergedTags = currentTags.concat(searchTags.split(",").map(name => name.trim()).filter(name => name !== ""));
+      // Remove duplicate tags
+      mergedTags = [...new Set(mergedTags)];
+      url.searchParams.set("tags", mergedTags.join(","));
+      window.location.href = url.href;
+    }
+  });
+  // Exit the forEach loops when right section is found and processed
+  return;
+}
+
+
+function cleanUptaglist() {
+  tagsection.querySelectorAll("div").forEach(existingTag => {
+    //check for duplicate tags
+    let duplicateTags = tagsection.querySelectorAll("div.inactive-tag");
+    let tagCount = 0;
+    duplicateTags.forEach(duplicatetag => {
+      if ((duplicatetag.textContent.toLowerCase() === existingTag.textContent.toLowerCase()) && !existingTag.classList.contains("active-tag")) {
+        tagCount++;
+      }
+    });
+    if (tagCount > 1 && existingTag.classList.contains("inactive-tag")) {
+      existingTag.remove();
+    }
+    if (existingTag.classList.contains("active-tag")) {
+      tagsection.prepend(existingTag);
+    }
+  });
+  console.log("Cleaned up tag list.");
 }
 
 function toTitleCase(str) {
@@ -296,7 +338,7 @@ async function updateListingsPrice() {
               price.style.fontWeight = "bold";
               price.style.color = "#4A90E2";
               price.style.textAlign = "right";
-              price.innerHTML = `~${convertedAmount.toFixed(2)} ${selectedCurrency.toUpperCase()}<br><span style="color:#a7a7a7; font-size:0.9em">(${priceText})</span>`;
+              price.innerHTML = `<span class="JC-oldprice">(${priceText})</span><br>~${convertedAmount.toFixed(2)} ${selectedCurrency.toUpperCase()}`;
               price.dataset.updatedCurrency = selectedCurrency;
             }
           }
@@ -383,19 +425,30 @@ function HideCreator(creatorNames) {
   })
 };
 
+
+let isAddingSeachbox = false;
 // Observe DOM changes to re-apply hiding and fixes (needed since site uses dynamic loading)
 const observer = new MutationObserver(() => {
+  console.log("DOM changed, re-applying Jinxxy Companion features...");
   HideCreator(hiddenCreators);
   HidePromotedListings();
   fixLinkSorting();
   fixBrokenLinks();
-  addTagSeachbox();
+  if (!isAddingSeachbox && !document.querySelector('#tagbox')) {
+    console.log("Adding tag searchbox...");
+    isAddingSeachbox = true;
+    setTimeout(() => {
+      addTagSeachbox();
+      isAddingSeachbox = false;
+    }, 200);
+  }
   if (!isUpdatingPrices) {
     isUpdatingPrices = true;
     observer.disconnect();// <--- disconnect before updating
     setTimeout(() => {
       updateListingsPrice();
       isUpdatingPrices = false;
+      console.log("trying to update prices...");
       observer.observe(document.body, { subtree: true, childList: true }); // <--- reconnect after
     }, priceupdateInterval);
   }
@@ -417,6 +470,12 @@ style.innerText = `
 
 .inactive-tag:hover {
  background-color: rgba(74, 222, 128, 0.29); 
+}
+
+.JC-oldprice {
+  color:#a7a7a7; 
+  font-size:0.8em;
+  opacity: 0.7;
 }
 `;
 document.head.appendChild(style);

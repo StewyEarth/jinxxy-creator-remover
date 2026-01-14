@@ -11,6 +11,7 @@ const hidePromotedCheckbox = document.getElementById("hidePromotedCheckbox");
 const optionsList = document.getElementById("optionsList");
 const currencySelect = document.getElementById("currencyselect");
 const infoPopupCurrencyLastUpdate = document.getElementById("infoPopupCurrencyLastUpdate");
+let lastupdateCheck = null;
 let hiddenCreators = [];
 let sortByLatest = false;
 let hidePromoted = false;
@@ -41,6 +42,26 @@ function InitJinxxyCompanion() {
       sortByLatest = result.sortByLatest;
     }
   });
+
+  storage.local.get("lastupdateCheck").then((result) => {
+    if (result.lastupdateCheck) {
+      lastupdateCheck = result.lastupdateCheck;
+      lastupdateCheck = new Date(lastupdateCheck);
+      let lastupdateString = lastupdateCheck.toLocaleString();
+      lastupdateString = lastupdateString.replace(",", " -");
+      lastupdateString = lastupdateString.replace(".", ":");
+      infoPopupCurrencyLastUpdate.textContent = `${lastupdateString.slice(0, -3)}`;
+    } else {
+      // If no last update check found, fetch currencies to set it
+      getCurrencies();
+      // Update the last update check display once currencies are fetched
+      let lastupdateString = lastupdateCheck.toLocaleString();
+      lastupdateString = lastupdateString.replace(",", " -");
+      lastupdateString = lastupdateString.replace(".", ":");
+      infoPopupCurrencyLastUpdate.textContent = `${lastupdateString.slice(0, -3)}`;
+    }
+  });
+
   storage.local.get("hidePromoted").then((result) => {
     if (result.hidePromoted !== undefined) {
       hidePromotedCheckbox.checked = result.hidePromoted;
@@ -58,7 +79,6 @@ function InitJinxxyCompanion() {
   storage.local.get("currencies").then((result) => {
     if (result.currencies) {
       currenciesList = result.currencies;
-      infoPopupCurrencyLastUpdate.textContent = `${currenciesList.latestUpdate}`;
     } else {
       getCurrencies();
     }
@@ -82,6 +102,7 @@ function addCurrencyOptions() {
 }
 
 function queryTabs(queryInfo) {
+  console.log("Querying tabs with:", queryInfo);
   if (browserAPI.tabs.query.length === 1) {
     // Firefox/WebExtension: returns Promise
     return browserAPI.tabs.query(queryInfo);
@@ -107,7 +128,6 @@ currencySelect.addEventListener("change", () => {
   const newCurrency = currencySelect.value;
   const message = { action: "UpdateCurrency", value: currencySelect.value };
   storage.local.set({ selectedCurrency: newCurrency });
-  console.log("Selected currency:", newCurrency);
   sendMessageToActiveTab(message);
 });
 
@@ -217,7 +237,6 @@ function getCurrencies() {
   browser.runtime.sendMessage(message).then((response) => {
     if (response && response.currencies) {
       currenciesList = response.currencies;
-      infoPopupCurrencyLastUpdate.textContent = `${currenciesList.latestUpdate}`;
     }
   });
 }

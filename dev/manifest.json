@@ -1,1 +1,29 @@
-{"manifest_version":3,"name":"Jinxxy Companion","version":"1.0.5","description":"Jinxxy Companion - Hide creators, fix links to sort by latest, and hide promoted listings on Jinxxy.com to improve your browsing experience.","homepage_url":"https://github.com/StewyEarth/Jinxxy-Creator-Remover","permissions":["activeTab","storage"],"icons":{"48":"icons/block48.png","64":"icons/block64.png","128":"icons/block128.png"},"background":{"scripts":["background-script.js"],"type":"module"},"action":{"default_icon":"icons/block64.png","default_title":"Jinxxy Creator Hider","default_popup":"popup/popup.html"},"browser_specific_settings":{"gecko":{"id":"@jinxxy_creator_hider","strict_min_version":"142.0","data_collection_permissions":{"required":["none"]}}},"content_scripts":[{"matches":["*://*.jinxxy.com/*"],"js":["creator_hider.js"]}]}
+{
+  "manifest_version": 3,
+  "name": "Jinxxy Companion",
+  "version": "1.0.5",
+  "description": "Jinxxy Companion - Hide creators, fix links to sort by latest, and hide promoted listings on Jinxxy.com to improve your browsing experience.",
+  "homepage_url": "https://github.com/StewyEarth/Jinxxy-Creator-Remover",
+  "permissions": ["activeTab", "storage"],
+  "icons": {
+    "48": "icons/block48.png",
+    "64": "icons/block64.png",
+    "128": "icons/block128.png"
+  },
+  "background": { "scripts": ["background-script.js"], "type": "module" },
+  "action": {
+    "default_icon": "icons/block64.png",
+    "default_title": "Jinxxy Creator Hider",
+    "default_popup": "popup/popup.html"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "@jinxxy_creator_hider",
+      "strict_min_version": "142.0",
+      "data_collection_permissions": { "required": ["none"] }
+    }
+  },
+  "content_scripts": [
+    { "matches": ["*://*.jinxxy.com/*"], "js": ["Jinxxy_companion.js"] }
+  ]
+}
