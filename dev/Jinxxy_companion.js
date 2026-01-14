@@ -186,15 +186,12 @@ function addTagSeachbox() {
       tagsection.querySelectorAll("div").forEach(existingTag => {
         // If tag exists, mark it as active and remove the new tag
         if (existingTag.textContent.toLowerCase() === tag.toLowerCase() && (!existingTag.classList.contains("JC-active-tag") && !existingTag.classList.contains("JC-inactive-tag"))) {
-          console.log("Tag already exists:", existingTag.textContent);
-          console.log("adding active tag for:", existingTag.textContent);
           existingTag.textContent = toTitleCase(tag);
           existingTag.classList.add("JC-active-tag");
           tagsection.prepend(existingTag);
           tagExists = true;
           newTagDiv.remove();
         } else if ((existingTag.textContent.toLowerCase() !== tag.toLowerCase()) || existingTag.classList.contains("JC-active-tag")) {
-          console.log("adding inactive tag for:", existingTag.textContent);
           existingTag.classList.add("JC-inactive-tag");
           existingTag.addEventListener("click", () => {
             tagsection.prepend(existingTag);
@@ -382,7 +379,6 @@ async function updateListingsPrice() {
 // Update text prices
 function updateTextPrices(PriceElement) {
   let priceText = PriceElement.textContent.trim();
-  console.log(priceText);
   if (PriceElement.dataset.originalPrice != null) {
     priceText = PriceElement.dataset.originalPrice;
   }
@@ -400,7 +396,6 @@ function updateTextPrices(PriceElement) {
   // Convert and update price display
   if (currencycode != selectedCurrency && PriceElement.dataset.updatedCurrency != selectedCurrency && selectedCurrency != PriceElement.dataset.originalcurrency) {
     let convertedAmount = convertCurrency(amount, currencycode, selectedCurrency);
-    console.log("Converted amount:", convertedAmount);
     let newPrice = null;
     if (convertedAmount != null) {
       if (convertedAmount == 0) {
@@ -413,7 +408,6 @@ function updateTextPrices(PriceElement) {
       newPrice = "conversion error";
     }
 
-    console.log("Converted amount fixed to 2 decimals:", convertedAmount);
     if (convertedAmount != null) {
       PriceElement.classList.add("JC-updatedPrice");
       PriceElement.innerHTML = `<span class="JC-oldprice">(${priceText})</span><br>~${newPrice}`;
@@ -448,8 +442,6 @@ function getCurrencyAndAmountfromText(textElement) {
   } if (!textElement.dataset.originalPrice) {
     textElement.dataset.originalPrice = priceText;
   }
-  console.log(textElement.dataset.originalcurrency, textElement.dataset.originalPrice);
-  console.log("Extracted currency and amount:", currencycode[0].toLowerCase(), amount);
   return {
     currency: currencycode[0].toLowerCase(),
     amount: amount
@@ -524,7 +516,6 @@ function HideCreator(creatorNames) {
 let isAddingSeachbox = false;
 // Observe DOM changes to re-apply hiding and fixes (needed since site uses dynamic loading)
 const observer = new MutationObserver(() => {
-  console.log("DOM changed, re-applying Jinxxy Companion features...");
   HideCreator(hiddenCreators);
   if (hidePromoted) {
     HidePromotedListings();
@@ -589,3 +580,26 @@ style.innerText = `
 
 `;
 document.head.appendChild(style);
+
+
+
+function extractBetween(str, startWord, endWord) {
+  const startIdx = str.indexOf(startWord);
+  if (startIdx === -1) return null;
+  const endIdx = str.indexOf(endWord, startIdx + startWord.length);
+  if (endIdx === -1) return str.substring(startIdx + startWord.length);
+  return str.substring(startIdx + startWord.length, endIdx);
+}
+
+// const text = "abc START this is the part I want END xyz";
+// const result = extractBetween(text, "START", "END");
+// console.log(result.trim()); // "this is the part I want"
+
+let jinxxyScripts = document.head.querySelectorAll("script");
+jinxxyScripts.forEach(script => {
+  if (script.src == "" || script.src == null || script.src == undefined) {
+    let scriptContent = script.textContent;
+    let datalistings = extractBetween(scriptContent, '"listings":{', `"networkStatus":7`);
+    console.log("Extracted listings data:", datalistings);
+  }
+});
