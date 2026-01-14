@@ -145,13 +145,13 @@ function addTagSeachbox() {
       let newTagDiv = document.createElement("div");
       newTagDiv.textContent = toTitleCase(tag);
       newTagDiv.className = "inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset bg-green-50 text-green-700 ring-green-600/20 dark:bg-green-400/10 dark:text-green-400 dark:ring-green-400/20 cursor-pointer";
-      newTagDiv.classList.add("active-tag");
+      newTagDiv.classList.add("JC-active-tag");
       // Add click event to remove tag
       newTagDiv.addEventListener("click", () => {
         // Remove tag from URL and refresh
         let currentTags = url.searchParams.get("tags").split(",").map(name => name.trim()).filter(name => name !== "");
         let updatedTags = currentTags.filter(t => t.toLowerCase() !== tag.toLowerCase());
-        newTagDiv.classList.add("active-tag");
+        newTagDiv.classList.add("JC-active-tag");
         if (updatedTags.length > 0) {
           url.searchParams.set("tags", updatedTags.join(","));
         } else {
@@ -163,17 +163,17 @@ function addTagSeachbox() {
       // Check if tag already exists (case insensitive)
       tagsection.querySelectorAll("div").forEach(existingTag => {
         // If tag exists, mark it as active and remove the new tag
-        if (existingTag.textContent.toLowerCase() === tag.toLowerCase() && (!existingTag.classList.contains("active-tag") && !existingTag.classList.contains("inactive-tag"))) {
+        if (existingTag.textContent.toLowerCase() === tag.toLowerCase() && (!existingTag.classList.contains("JC-active-tag") && !existingTag.classList.contains("JC-inactive-tag"))) {
           console.log("Tag already exists:", existingTag.textContent);
           console.log("adding active tag for:", existingTag.textContent);
           existingTag.textContent = toTitleCase(tag);
-          existingTag.classList.add("active-tag");
+          existingTag.classList.add("JC-active-tag");
           tagsection.prepend(existingTag);
           tagExists = true;
           newTagDiv.remove();
-        } else if((existingTag.textContent.toLowerCase() !== tag.toLowerCase()) || existingTag.classList.contains("active-tag")) {
+        } else if ((existingTag.textContent.toLowerCase() !== tag.toLowerCase()) || existingTag.classList.contains("JC-active-tag")) {
           console.log("adding inactive tag for:", existingTag.textContent);
-          existingTag.classList.add("inactive-tag");
+          existingTag.classList.add("JC-inactive-tag");
           existingTag.addEventListener("click", () => {
             tagsection.prepend(existingTag);
           })
@@ -211,17 +211,17 @@ function addTagSeachbox() {
 function cleanUptaglist() {
   tagsection.querySelectorAll("div").forEach(existingTag => {
     //check for duplicate tags
-    let duplicateTags = tagsection.querySelectorAll("div.inactive-tag");
+    let duplicateTags = tagsection.querySelectorAll("div.JC-inactive-tag");
     let tagCount = 0;
     duplicateTags.forEach(duplicatetag => {
-      if ((duplicatetag.textContent.toLowerCase() === existingTag.textContent.toLowerCase()) && !existingTag.classList.contains("active-tag")) {
+      if ((duplicatetag.textContent.toLowerCase() === existingTag.textContent.toLowerCase()) && !existingTag.classList.contains("JC-active-tag")) {
         tagCount++;
       }
     });
-    if (tagCount > 1 && existingTag.classList.contains("inactive-tag")) {
+    if (tagCount > 1 && existingTag.classList.contains("JC-inactive-tag")) {
       existingTag.remove();
     }
-    if (existingTag.classList.contains("active-tag")) {
+    if (existingTag.classList.contains("JC-active-tag")) {
       tagsection.prepend(existingTag);
     }
   });
@@ -312,64 +312,124 @@ function HidePromotedListings() {
   };
 };
 
+
+
 // Update listing prices based on selected currency
 async function updateListingsPrice() {
+  // Update single store page price or profile listings prices
+  if (!document.location.href.includes("market")) {
+    let singleStorePagePrice = document.querySelector(".rounded-lg div.text-3xl.font-bold");
+    let multipleStorePagePrices = document.querySelectorAll("span.text-xl.font-semibold");
+    let profileStorePagePrices = document.querySelectorAll(".rounded-lg.border.bg-card span.ml-auto.font-semibold");
+    if (singleStorePagePrice == null && (multipleStorePagePrices.length == 0 || multipleStorePagePrices == null) && (profileStorePagePrices.length == 0 || profileStorePagePrices == null)) {
+      console.log("No prices found on this page for update.");
+      return;
+    }
+    {
+      if (singleStorePagePrice != null) {
+        // Single price found on store page
+        updateTextPrices(singleStorePagePrice);
+        singleStorePagePrice.classList.add("JC-updatedPrice-left");
+      } else if (multipleStorePagePrices != null && multipleStorePagePrices.length > 0) {
+        // Multiple prices found on store page
+        multipleStorePagePrices.forEach(priceElement => {
+          updateTextPrices(priceElement);
+          priceElement.classList.add("JC-updatedPrice-left");
+        });
+      }else if (profileStorePagePrices != null && profileStorePagePrices.length > 0) {
+        // Multiple prices found on profile store page
+        profileStorePagePrices.forEach(priceElement => {
+          updateTextPrices(priceElement);
+        });
+      }
+    }
+  }
   if (document.location.href.includes("market")) {
     let listings = getMarketListings();
     listings.forEach((listing) => {
       if (listing != null) {
         let price = listing.querySelector('span.ml-auto.font-semibold');
         if (price != null) {
-          let priceText = price.textContent.trim();
-          if (price.dataset.originalPrice != null) {
-            priceText = price.dataset.originalPrice;
-          }
-          if (priceText.includes(",")) {
-            priceText = priceText.replace(",", "."); // Handle European decimal format
-          }
-          let currencycode = priceText.match(/\b[a-z]+\b/gi)[0].toLowerCase();
-          let amount = parseFloat(priceText.match(/\b[\d\.]+\b/g)[0]);
-          price.dataset.originalPrice = priceText;
-          price.dataset.originalcurrency = currencycode;
-
-          if (currencycode != selectedCurrency && price.dataset.updatedCurrency != selectedCurrency && selectedCurrency != price.dataset.originalcurrency) {
-            let convertedAmount = convertCurrency(amount, currencycode, selectedCurrency);
-            if (convertedAmount != null) {
-              price.style.fontWeight = "bold";
-              price.style.color = "#4A90E2";
-              price.style.textAlign = "right";
-              price.innerHTML = `<span class="JC-oldprice">(${priceText})</span><br>~${convertedAmount.toFixed(2)} ${selectedCurrency.toUpperCase()}`;
-              price.dataset.updatedCurrency = selectedCurrency;
-            }
-          }
-          if (price.dataset.originalcurrency != null && selectedCurrency == price.dataset.originalcurrency && price.dataset.updatedCurrency != selectedCurrency) {
-            price.innerHTML = priceText;
-            price.style = "";
-            price.dataset.updatedCurrency = null;
-          }
-          if (selectedCurrency === "none") {
-            // Revert to original price display
-            price.innerHTML = priceText;
-            price.style = "";
-            price.dataset.updatedCurrency = null;
-            return;
-          }
+          updateTextPrices(price);
         };
       };
     });
   };
 };
 
+// Update text prices
+function updateTextPrices(PriceElement) {
+  let priceText = PriceElement.textContent.trim();
+  console.log(priceText);
+  if (PriceElement.dataset.originalPrice != null) {
+    priceText = PriceElement.dataset.originalPrice;
+  }
+  let currencyAndAmount = getCurrencyAndAmountfromText(PriceElement);
+  let currencycode = currencyAndAmount.currency;
+  let amount = currencyAndAmount.amount;
+  // If no selected currency or "none", revert to original price display
+  if (selectedCurrency == null || selectedCurrency === "none") {
+    // Revert to original price display
+    PriceElement.innerHTML = priceText;
+    PriceElement.classList.remove("JC-updatedPrice");
+    PriceElement.dataset.updatedCurrency = null;
+    return;
+  }
+  // Convert and update price display
+  if (currencycode != selectedCurrency && PriceElement.dataset.updatedCurrency != selectedCurrency && selectedCurrency != PriceElement.dataset.originalcurrency) {
+    let convertedAmount = convertCurrency(amount, currencycode, selectedCurrency);
+    console.log("Converted amount:", convertedAmount);
+    if (convertedAmount != null) {
+      PriceElement.classList.add("JC-updatedPrice");
+      PriceElement.innerHTML = `<span class="JC-oldprice">(${priceText})</span><br>~${convertedAmount.toFixed(2)} ${selectedCurrency.toUpperCase()}`;
+      PriceElement.dataset.updatedCurrency = selectedCurrency;
+    }
+  }
+  // Revert to original if switching back to original currency
+  if (PriceElement.dataset.originalcurrency != null && selectedCurrency == PriceElement.dataset.originalcurrency && PriceElement.dataset.updatedCurrency != selectedCurrency) {
+    PriceElement.innerHTML = priceText;
+    PriceElement.classList.remove("JC-updatedPrice");
+    PriceElement.dataset.updatedCurrency = null;
+  }
+}
+
+function getCurrencyAndAmountfromText(textElement) {
+  let priceText = textElement.textContent.trim();
+  let currencycode = priceText.match(/\b[a-z]+\b/gi);
+  let amount = parseFloat(priceText.match(/\b[\d\.]+\b/g)[0]);
+
+  if (priceText.includes(",")) {
+    priceText = priceText.replace(",", "."); // Handle European decimal format
+    if (textElement.dataset.originalPrice != null) {
+      priceText = textElement.dataset.originalPrice;
+    }
+  }
+
+  if (!currencycode || currencycode.length < 1) {
+    currencycode = (priceText.includes("$")) ? ["usd"] : currencycode;
+  }
+  if (!textElement.dataset.originalcurrency) {
+    textElement.dataset.originalcurrency = currencycode[0].toLowerCase();
+  } if (!textElement.dataset.originalPrice) {
+    textElement.dataset.originalPrice = priceText;
+  }
+  console.log(textElement.dataset.originalcurrency, textElement.dataset.originalPrice);
+  console.log("Extracted currency and amount:", currencycode[0].toLowerCase(), amount);
+  return {
+    currency: currencycode[0].toLowerCase(),
+    amount: amount
+  };
+}
 
 // Convert currency based on rates in currenciesList
 function convertCurrency(amount, fromCurrency, toCurrency) {
   let fromRate = null;
   let toRate = null;
   for (let currencyKey in currenciesList.currencies) {
-    if (currenciesList.currencies[currencyKey].code === fromCurrency) {
+    if ((currenciesList.currencies[currencyKey].code === fromCurrency) || (currenciesList.currencies[currencyKey].symbol === fromCurrency)) {
       fromRate = currenciesList.currencies[currencyKey].rate;
     }
-    if (currenciesList.currencies[currencyKey].code === toCurrency) {
+    if ((currenciesList.currencies[currencyKey].code === toCurrency) || (currenciesList.currencies[currencyKey].symbol === toCurrency)) {
       toRate = currenciesList.currencies[currencyKey].rate;
     }
   }
@@ -463,12 +523,12 @@ observer.observe(document.body, {
 // CSS Styles to be injected for things like the tag elements for hover effects
 let style = document.createElement('style');
 style.innerText = `
-.active-tag:hover {
+.JC-active-tag:hover {
  background-color: #a61e1e; !important;
  color: white; !important;
 }
 
-.inactive-tag:hover {
+.JC-inactive-tag:hover {
  background-color: rgba(74, 222, 128, 0.29); 
 }
 
@@ -477,5 +537,14 @@ style.innerText = `
   font-size:0.8em;
   opacity: 0.7;
 }
+.JC-updatedPrice{
+  font-weight: bold;
+  color: #4A90E2;
+  text-align: right;
+}
+.JC-updatedPrice-left{
+  text-align: left;
+}
+
 `;
 document.head.appendChild(style);
