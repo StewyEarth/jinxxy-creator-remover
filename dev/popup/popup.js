@@ -39,7 +39,8 @@ function InitJinxxyCompanion() {
     if (result.sortByLatest !== undefined) {
       sortByLatestCheckbox.checked = result.sortByLatest;
     } else {
-      sortByLatest = result.sortByLatest;
+      sortByLatest = false;
+      storage.local.set({ sortByLatest: false });
     }
   });
 
@@ -54,7 +55,8 @@ function InitJinxxyCompanion() {
     } else {
       // If no last update check found, fetch currencies to set it
       getCurrencies();
-      // Update the last update check display once currencies are fetched
+      lastupdateCheck = new Date(Date.now());
+      //Update the last update check display once currencies are fetched
       let lastupdateString = lastupdateCheck.toLocaleString();
       lastupdateString = lastupdateString.replace(",", " -");
       lastupdateString = lastupdateString.replace(".", ":");
@@ -66,7 +68,8 @@ function InitJinxxyCompanion() {
     if (result.hidePromoted !== undefined) {
       hidePromotedCheckbox.checked = result.hidePromoted;
     } else {
-      hidePromoted = result.hidePromoted;
+      hidePromoted = false;
+      storage.local.set({ hidePromoted: false });
     }
   });
   storage.local.get("selectedCurrency").then((result) => {

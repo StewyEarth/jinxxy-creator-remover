@@ -2,6 +2,9 @@ const storage = (typeof browser !== 'undefined' && browser.storage) ? browser.st
 const browserAPI = (typeof browser !== 'undefined') ? browser : chrome;
 let currenciesList = {};
 let lastupdateCheck = null;
+let lastCheckDate = null;
+let lastCheckDateString = "";
+let todaysDate = undefined;
 
 
 browserAPI.runtime.onInstalled.addListener(() => {
@@ -12,46 +15,61 @@ browserAPI.runtime.onStartup.addListener(() => {
     InitJinxxyCompanion();
 });
 
-function InitJinxxyCompanion() {
-    storage.local.get("lastupdateCheck").then((result) => {
-        if (result.lastupdateCheck) {
-            lastupdateCheck = result.lastupdateCheck;
-            lastupdateCheck = new Date(lastupdateCheck);
-            console.log("Last update check:", lastupdateCheck);
-            updateCurrencies();
-        }else{
-            updateCurrencies();
+async function InitJinxxyCompanion() {
+    lastupdateCheck = await checkLocalStorage("lastupdateCheck");
+    currenciesList = await checkLocalStorage("currencies");
+    await loadCurrencies();
+    // if (lastupdateCheck != null) {
+    //     await updateCurrencies();
+    // } else {
+    //     await loadCurrencies();
+    // }
+
+    // if (currenciesList != null) {
+    //     await loadCurrencies();
+    //     return;
+    // }
+}
+
+function checkLocalStorage(key) {
+    return storage.local.get(key).then((result) => {
+        if (result[key] === undefined) {
+            return null;
         }
-    });
-    storage.local.get("currencies").then((result) => {
-        if (result.currencies) {
-            currenciesList = result.currencies;
-        } else {
-            loadCurrencies();
-        }
+        return result[key];
     });
 }
 
-
 // Listen for messages from popup
-browserAPI.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    console.log("Received message in background script:", request);
+browserAPI.runtime.onMessage.addListener(async (request, sender, sendResponse) => {
     if (request.action === "getCurrencies") {
-        sendResponse({ currencies: currenciesList });
-    }
-    if (request.action === "updateCurrencies") {
-        updateCurrencies();
+        lastupdateCheck = await checkLocalStorage("lastupdateCheck");
+        currenciesList = await checkLocalStorage("currencies");
+        await loadCurrencies();
         sendResponse({ currencies: currenciesList });
     }
 });
 
 
-function loadCurrencies() {
-    fetch(browserAPI.runtime.getURL('/json/currencies.json'))
+async function loadCurrencies() {
+    await fetch(browserAPI.runtime.getURL('/json/currencies.json'))
         .then(response => response.json())
-        .then(data => {
-            currenciesList = data;
-            storage.local.set({ currencies: data });
+        .then(async data => {
+            if (data == null || data.latestUpdate == null || data.currencies == null) {
+                console.error("No data found in currencies.json");
+                return;
+            }
+            if (currenciesList == null) {
+                currenciesList = data;
+                storage.local.set({ currencies: data });
+                await updateCurrencies();
+                return;
+            }
+            if (new Date(data.latestUpdate) > new Date(currenciesList.latestUpdate)) {
+                currenciesList = data;
+                storage.local.set({ currencies: data });
+            }
+            await updateCurrencies();
         }, error => {
             console.error("Error loading currencies.json:", error);
         });
@@ -66,18 +84,17 @@ function addHours(date, hours) {
 }
 
 
-function updateCurrencies() {
+async function updateCurrencies() {
     let date = new Date(Date.now());
-    let todaysDate = date.toLocaleDateString();
-    let lastCheckDate = null;
-    let lastCheckDateString = "";
+    todaysDate = date.toLocaleDateString();
+    console.log("Trying to update currency, last check: ", lastupdateCheck)
+
     // Check last update time and if within 12 hours, skip update
     if (lastupdateCheck != null) {
         lastCheckDate = new Date(lastupdateCheck);
         lastCheckDateString = lastCheckDate.toLocaleDateString();
         if (lastCheckDateString == todaysDate) {
-            console.log("Currency rates are up to date for today, skipping update.");
-            console.log("next allowed update time:", addHours(lastCheckDate, 12));
+            console.log("Currency rates are up to date for today, skipping update. next available update time:", addHours(lastCheckDate, 12),"or later");
             return;
         }
         if (subtractHours(date, 12) < lastCheckDate) {
@@ -85,15 +102,12 @@ function updateCurrencies() {
             return;
         }
     }
-    
-    fetch('https://latest.currency-api.pages.dev/v1/currencies/usd.json').then(response => response.json()).then(data => {
-        if (data && data.usd && data.date) {
 
-            console.log("Currency data fetched:", data);
+    fetch('https://latest.currency-api.pages.dev/v1/currencies/usd.json').then(response => response.json()).then(async data => {
+        if (data && data.usd && data.date) {
             if ((data.date == currenciesList.latestUpdate) && (data.date == lastCheckDateString)) {
                 return { "status": "No Update Needed" };
             }
-            console.log(data);
             // Update local currency rates
             for (let dataKey in data.usd) {
                 for (let curKey in currenciesList.currencies) {
